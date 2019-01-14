@@ -1,7 +1,8 @@
-package com.navi.mvc.util;
+package com.navi.proxy.multilevel.util;
 
-import com.navi.mvc.impl.Cicadas;
-import com.navi.mvc.service.BaseService;
+
+import com.navi.proxy.multilevel.impl.Cicadas;
+import com.navi.proxy.multilevel.service.BaseService;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;

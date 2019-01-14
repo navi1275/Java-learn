@@ -1,4 +1,4 @@
-package com.navi.mvc.service;
+package com.navi.proxy.multilevel.service;
 
 /**
  * 基本行为接口

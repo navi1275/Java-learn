@@ -1,7 +1,7 @@
 package com.navi.proxy.multilevel.service.impl;
 
-import com.navi.mvc.entity.Dept;
-import com.navi.mvc.mapper.DeptMapper;
+import com.navi.entity.Dept;
+import com.navi.mapper.DeptMapper;
 import com.navi.proxy.multilevel.service.IDeptService;
 import org.springframework.stereotype.Service;
 

@@ -1,6 +1,6 @@
 package com.navi.proxy.multilevel.service;
 
-import com.navi.mvc.entity.Dept;
+import com.navi.entity.Dept;
 
 /**
  * <p>

@@ -22,7 +22,7 @@ SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
 SqlSessionFactory factory = builder.build(is);
 SqlSession sqlSession = factory.openSession();
 
-Dept d = sqlSession.selectOne("com.navi.mvc.mapper.DeptMapper.selectByNo", 111);
+Dept d = sqlSession.selectOne("DeptMapper.selectByNo", 111);
 ```
 
 Mapper接口使用方式
@@ -86,7 +86,7 @@ Dept selectByNo(Integer no);
 Mapper.xml
 
 ```xml
-<select id="selectByNo" resultType="com.navi.mvc.entity.Dept">
+<select id="selectByNo" resultType="Dept">
     select * from dept where deptno = #{no};
 </select>
 ```

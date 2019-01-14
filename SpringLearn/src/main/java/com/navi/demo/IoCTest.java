@@ -12,6 +12,6 @@ import org.springframework.context.ApplicationContext;
 public class IoCTest {
 
     public static void main(String[] args) {
-        ApplicationContext
+        // ApplicationContext
     }
 }
