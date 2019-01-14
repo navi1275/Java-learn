@@ -1,0 +1,33 @@
+package com.navi.mvc.entity;
+
+import java.io.Serializable;
+
+
+
+import com.baomidou.mybatisplus.annotations.Version;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author ganxf
+ * @since 2018-12-06
+ */
+@Data
+public class Dept implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    private Integer deptno;
+
+    private String dname;
+
+    private String loc;
+
+
+}
