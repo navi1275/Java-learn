@@ -804,6 +804,19 @@ rows in set (0.00 sec)
 - 对主表的过滤应该放在WHERE；
 - 对于关联表，先条件查询后连接则用ON，先连接后条件查询则用WHERE；
 
+```
+mysql> SELECT * FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a. NAME = 'mike';
++-----+------+------+------+
+| uid | name | oid | uid |
++-----+------+------+------+
+| aaa | mike | 1    | aaa |
+| aaa | mike | 2    | aaa |
+| ccc | mike | 6    | ccc |
+| ddd | mike | NULL | NULL|
++-----+------+------+------+
+rows in set (0.00 sec)
+```
+
 #### 5.GROUP BY
 
 根据group by子句中的列，对VT4中的记录进行分组操作，产生 虚拟表VT5 。
@@ -816,256 +829,40 @@ rows in set (0.00 sec)
 
 GROUP BY改变了对表的引用，将其转换为新的引用方式，能够对其进行下一级逻辑操作的列会减少；
 
-
-
-11
-12
-13
-14
-15
-16
-17
-
-mysql> SELECT * FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a. NAME = 'mike';
-+-----+------+------+------+
-| uid | name | oid | uid |
-+-----+------+------+------+
-| aaa | mike | 1    | aaa |
-| aaa | mike | 2    | aaa |
-| ccc | mike | 6    | ccc |
-| ddd | mike | NULL |NULL |
-+-----+------+------+------+
-rows in set (0.00 sec)
-
 我的理解是：
 
 根据分组字段，将具有相同分组字段的记录归并成一条记录，因为每一个分组只能返回一条记录，除非是被过滤掉
 了，而不在分组字段里面的字段可能会有多个值，多个值是无法放进一条记录的，所以必须通过聚合函数将这些具有
 多值的列转换成单值；
 
-6.HAVING
-
-对 
-
-虚拟表
-
-VT5 
-
-应用having过滤，只有符合的记录才会被 插入到 
-
-虚拟表
-
-VT6 
-
-中。
-
-7.SELECT
-
-mysql> 
-
-SELECT
-
--> *
--> 
-
-FROM
-
--> table1 
-
-AS 
-
-a
--> 
-
-LEFT OUTER JOIN 
-
-table2 
-
-AS 
-
-b 
-
-ON 
-
-a
-
-.uid 
-
-= b
-
-.uid
-
--> 
-
-WHERE
-
--> a. NAME = 
-
-'mike'
-
--> 
-
-GROUP BY
-
--> a
-
-.uid
-
-;
+```
+mysql> SELECT * FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a. NAME = 'mike' GROUP BY a.uid;
 +-----+------+------+------+
 | uid | name | oid | uid |
 +-----+------+------+------+
-| aaa | mike | 
-
-1 
-
-| aaa |
-| ccc | mike | 
-
-6 
-
-| ccc |
-| ddd | mike | 
-
-NULL 
-
-| 
-
-NULL 
-
-|
+| aaa | mike | 1    | aaa |
+| ccc | mike | 6    | ccc |
+| ddd | mike | NULL | NULL|
 +-----+------+------+------+
-rows 
+rows in set (0.00 sec)
+```
 
-in set 
+#### 6.HAVING
 
-(
+对虚拟表`VT5`应用having过滤，只有符合的记录才会被 插入到虚拟表`VT6`中。
 
-0.00 
-
-sec)
-
-1 2 3 4 5 6 7 8 9
-10
-11
-12
-13
-14
-15
-16
-17
-
-mysql> 
-
-SELECT
-
--> *
--> 
-
-FROM
-
--> table1 
-
-AS 
-
-a
--> 
-
-LEFT OUTER JOIN 
-
-table2 
-
-AS 
-
-b 
-
-ON 
-
-a
-
-.uid 
-
-= b
-
-.uid
-
--> 
-
-WHERE
-
--> a. NAME = 
-
-'mike'
-
--> 
-
-GROUP BY
-
--> a
-
-.uid
-
--> 
-
-HAVING
-
--> 
-
-count
-
-(b
-
-.oid
-
-) < 
-
-2
-
-;
+```
+mysql> SELECT * FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a. NAME = 'mike' GROUP BY a.uid HAVING count(b.oid) < 2;
 +-----+------+------+------+
 | uid | name | oid | uid |
 +-----+------+------+------+
-| ccc | mike | 
-
-6 
-
-| ccc |
-| ddd | mike | 
-
-NULL 
-
-| 
-
-NULL 
-
-|
+| ccc | mike | 6    | ccc |
+| ddd | mike | NULL | NULL|
 +-----+------+------+------+
-rows 
+rows in set (0.00 sec)
+```
 
-in set 
-
-(
-
-0.00 
-
-sec)
-
-1 2 3 4 5 6 7 8 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-
-开课吧
-
-java
-
-高级架构师
+#### 7.SELECT
 
 这个子句对SELECT子句中的元素进行处理，生成VT5表。
 (5-J1)计算表达式 计算SELECT 子句中的表达式，生成VT5-J1
@@ -1077,698 +874,177 @@ java
 时表的表结构和上一步产生的虚拟表VT5是一样的，不同的是对进行DISTINCT操作的列增加了一个唯一索引，以此来
 除重复数据。
 
+```
+mysql> SELECT a.uid, count(b.oid) AS total FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a.NAME = 'mike' GROUP BY a.uid HAVING count(b.oid) < 2;
++-----+-------+
+| uid | total |
++-----+-------+
+| ccc | 1     |
+| ddd | 0     |
++-----+-------+
+rows in set (0.00 sec)
+```
+
 9.ORDER BY
 
-从 
-
-VT5
-
-\-
-
-J2 
-
-中的表中，根据ORDER BY 子句的条件对结果进行排序，生成VT6表。
+从 `VT5-J2`中的表中，根据`ORDER BY`子句的条件对结果进行排序，生成VT6表。
 
 注意：
 
 唯一可使用SELECT中别名的地方；
 
-mysql> 
-
-SELECT
-
--> a
-
-.uid
-
-,
--> 
-
-count
-
-(b
-
-.oid
-
-) 
-
-AS 
-
-total
--> 
-
-FROM
-
--> table1 
-
-AS 
-
-a
--> 
-
-LEFT OUTER JOIN 
-
-table2 
-
-AS 
-
-b 
-
-ON 
-
-a
-
-.uid 
-
-= b
-
-.uid
-
--> 
-
-WHERE
-
--> a. NAME = 
-
-'mike'
-
--> 
-
-GROUP BY
-
--> a
-
-.uid
-
--> 
-
-HAVING
-
--> 
-
-count
-
-(b
-
-.oid
-
-) < 
-
-2
-
-;
+```
+mysql> SELECT a.uid, count(b.oid) AS total FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a.NAME = 'mike' GROUP BY a.uid HAVING count(b.oid) < 2 ORDER BY total DESC;
 +-----+-------+
 | uid | total |
 +-----+-------+
-| ccc | 
-
-1 
-
-|
-| ddd | 
-
-0 
-
-|
+| ccc | 1     |
+| ddd | 0     |
 +-----+-------+
-rows 
+rows in set (0.00 sec)
+```
 
-in set 
+#### 10.LIMIT（MySQL特有）
 
-(
-
-0.00 
-
-sec)
-
-1 2 3 4 5 6 7 8 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-
-mysql> 
-
-SELECT
-
--> a
-
-.uid
-
-,
--> 
-
-count
-
-(b
-
-.oid
-
-) 
-
-AS 
-
-total
--> 
-
-FROM
-
--> table1 
-
-AS 
-
-a
--> 
-
-LEFT OUTER JOIN 
-
-table2 
-
-AS 
-
-b 
-
-ON 
-
-a
-
-.uid 
-
-= b
-
-.uid
-
--> 
-
-WHERE
-
--> a. NAME = 
-
-'mike'
-
--> 
-
-GROUP BY
-
--> a
-
-.uid
-
--> 
-
-HAVING
-
--> 
-
-count
-
-(b
-
-.oid
-
-) < 
-
-2
-
--> 
-
-ORDER BY
-
-1 2 3 4 5 6 7 8 9
-10
-11
-12
-13
-
-开课吧
-
-java
-
-高级架构师
-
-10.LIMIT（MySQL特有）
-
-LIMIT子句从上一步得到的 
-
-VT6
-
-虚拟表 
-
-中选出从指定位置开始的指定行数据。
+LIMIT子句从上一步得到的`VT6虚拟表`中选出从指定位置开始的指定行数据。
 
 注意：
 
-offset 
-
-和 
-
-rows 
-
-的正负带来的影响；
+offset和rows的正负带来的影响；
 
 当偏移量很大时效率是很低的，可以这么做：
 
-采用子查询的方式优化 
+采用子查询的方式优化，在子查询里先从索引获取到最大id，然后倒序排，再取N行结果集
 
-，在子查询里先从索引获取到最大id，然后倒序排，再取N行结果集
+采用`INNER JOIN优化`，JOIN子句里也优先从索引获取ID列表，然后直接关联查询获得最终结果
 
-采用
 
-INNER JOIN
-
-优化 
-
-，JOIN子句里也优先从索引获取ID列表，然后直接关联查询获得最终结果
-
-解析顺序总结
-
-图示
-
--> total 
-
-DESC
-
-;
+```
+mysql> SELECT a.uid, count(b.oid) AS total FROM table1 AS a LEFT OUTER JOIN table2 AS b ON a.uid = b.uid WHERE a.NAME = 'mike' GROUP BY a.uid HAVING count(b.oid) < 2 ORDER BY total DESC LIMIT 1;
 +-----+-------+
 | uid | total |
 +-----+-------+
-| ccc | 
-
-1 
-
-|
-| ddd | 
-
-0 
-
-|
+| ccc | 1     |
 +-----+-------+
-rows 
+rows in set (0.00 sec)
+```
 
-in set 
+#### 解析顺序总结
 
-(
+##### 图示
 
-0.00 
 
-sec)
 
-14
-15
-16
-17
-18
-19
-20
-21
 
-mysql> 
+##### 流程分析
 
-SELECT
+\1. FROM（将最近的两张表，进行笛卡尔积）---VT1
+\2. ON（将VT1按照它的条件进行过滤）---VT2
+\3. LEFT JOIN（保留左表的记录）---VT3
+\4. WHERE（过滤VT3中的记录）--VT4…VTn
+\5. GROUP BY（对VT4的记录进行分组）---VT5
+\6. HAVING（对VT5中的记录进行过滤）---VT6
+\7. SELECT（对VT6中的记录，选取指定的列）--VT7
+\8. ORDER BY（对VT7的记录进行排序）--VT8
+\9. LIMIT（对排序之后的值进行分页）--MySQL特有的语法
 
--> a
+##### 流程说明：
+- 单表查询：根据`WHERE`条件过滤表中的记录，形成中间表（这个中间表对用户是不可见的）；然后根据`SELECT`的选择列选择相应的列进行返回最终结果。
 
-.uid
-
-,
--> 
-
-count
-
-(b
-
-.oid
-
-) 
-
-AS 
-
-total
--> 
-
-FROM
-
--> table1 
-
-AS 
-
-a
--> 
-
-LEFT JOIN 
-
-table2 
-
-AS 
-
-b 
-
-ON 
-
-a
-
-.uid 
-
-= b
-
-.uid
-
--> 
-
-WHERE
-
--> a. NAME = 
-
-'mike'
-
--> 
-
-GROUP BY
-
--> a
-
-.uid
-
--> 
-
-HAVING
-
--> 
-
-count
-
-(b
-
-.oid
-
-) < 
-
-2
-
--> 
-
-ORDER BY
-
--> total 
-
-DESC
-
--> 
-
-LIMIT 
-
-1
-
-;
-+-----+-------+
-| uid | total |
-+-----+-------+
-| ccc | 
-
-1 
-
-|
-+-----+-------+
-
-row in set 
-
-(
-
-0.00 
-
-sec)
-
-1 2 3 4 5 6 7 8 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-
-开课吧
-
-java
-
-高级架构师
-
-流程分析
-
-流程说明：
-单表查询：
-
-根据 
-
-WHERE 
-
-条件过滤表中的记录，形成中间表（这个中间表对用户是不可见的）；然后根据
-
-SELECT 
-
-的选择列选择相应的列进行返回最终结果。
-
-两表连接查询：
-
-对两表求积（笛卡尔积）并用 
-
-ON 
-
-条件和连接连接类型进行过滤形成中间表；然后根据WHERE条
-件过滤中间表的记录，并根据 
-
-SELECT 
-
-指定的列返回查询结果。
-
-多表连接查询：
-
-先对第一个和第二个表按照两表连接做查询，然后用查询结果和第三个表做连接查询，以此类
-推，直到所有的表都连接上为止，最终形成一个中间的结果表，然后根据WHERE条件过滤中间表的记录，并根据
-SELECT指定的列返回查询结果。
-
-WHERE条件解析顺序
-
-\1. 
-
-MySQL 
-
-：从左往右去执行 
-
-WHERE 
-
-条件的。
-\2. 
-
-Oracle 
-
-：从右往左去执行 
-
-WHERE 
-
-条件的。
-
-\1. FROM
-
-（将最近的两张表，进行笛卡尔积）
-
----VT1
-\2. ON
-
-（将
-
-VT1
-
-按照它的条件进行过滤）
-
----VT2
-\3. LEFT JOIN
-
-（保留左表的记录）
-
----VT3
-\4. WHERE
-
-（过滤
-
-VT3
-
-中的记录）
-
---VT4…VTn
-\5. GROUP BY
-
-（对
-
-VT4
-
-的记录进行分组）
-
----VT5
-\6. HAVING
-
-（对
-
-VT5
-
-中的记录进行过滤）
-
----VT6
-\7. SELECT
-
-（对
-
-VT6
-
-中的记录，选取指定的列）
-
---VT7
-\8. ORDER BY
-
-（对
-
-VT7
-
-的记录进行排序）
-
---VT8
-\9. LIMIT
-
-（对排序之后的值进行分页）
-
---MySQL
-
-特有的语法
-
-1 2 3 4 5 6 7 8 9
-1 
+- 两表连接查询：对两表求积（笛卡尔积）并用`ON`条件和连接连接类型进行过滤形成中间表；然后根据WHERE条件过滤中间表的记录，并根据SELECT指定的列返回查询结果。
 
 笛卡尔积：行相乘、列相加。
 
-1 
+- 多表连接查询：先对第一个和第二个表按照两表连接做查询，然后用查询结果和第三个表做连接查询，以此类推，直到所有的表都连接上为止，最终形成一个中间的结果表，然后根据WHERE条件过滤中间表的记录，并根据SELECT指定的列返回查询结果。
 
-写
+##### WHERE条件解析顺序
 
-WHERE
+\1. MySQL ：从左往右去执行 WHERE 条件的。
+\2. Oracle ：从右往左去执行 WHERE 条件的。
 
-条件的时候，优先级高的部分要去编写过滤力度最大的条件语句。
+写WHERE条件的时候，优先级高的部分要去编写过滤力度最大的条件语句。
 
-开课吧
-
-java
-
-高级架构师
-
-多表之间的关系
+### 多表之间的关系
 
 如上图所示，实际业务数据库中的表之间都是有关系的，我们接下来主要要学习的就是如何分析表关系及建立表关
 系。
 
 1. 分类表
-2. 商品表
-3. 订单表
-4. 订单项表
-
-表与表之间的关系
-
 create table category(
-cid varchar(32) primary key,
-cname varchar(100)
+	cid varchar(32) primary key,
+	cname varchar(100)
 );
-
-1 2 3 4
-
+2. 商品表
 create table product(
-pid varchar(32) primary key,
-pname varchar(40),
-price double
+	pid varchar(32) primary key,
+	pname varchar(40),
+	price double
 );
-
-1 2 3 4 5
-
+3. 订单表
 create table orders(
-oid varchar(32) primary key,
-totalprice double
+	oid varchar(32) primary key,
+	totalprice double
 );
-
-1 2 3 4
-
+4. 订单项表
 create table orderitem(
-oid varchar(50),
-pid varchar(50)
+	oid varchar(50),
+	pid varchar(50)
 );
 
-1 2 3 4
+#### 表与表之间的关系
 
-开课吧
-
-java
-
-高级架构师
 
 表与表之间的关系，说的就是表与表之间数据的关系。
-一对一关系
+- 一对一关系
+	常见实例：一夫一妻
+- 一对多关系
+	常见实例：会员和订单
+- 多对多关系（需要中间表实现）
+	常见实例：商品和订单
 
-常见实例：一夫一妻
+#### 外键
 
-一对多关系
+如何表示表与表之间的关系呢？就是使用外键约束表示的。
 
-常见实例：会员和订单
+要想理解外键，我们先去理解表的角色：主表和从表（需要建立关系才有了主从表的角色区分）
 
-多对多关系（需要中间表实现）
+- 主从表的理解
 
-常见实例：商品和订单
-
-外键
-
-如何表示表与表之间的关系呢？就是使用
-
-外键约束
-
-表示的。
-要想理解外键，我们先去理解表的角色：
-
-主表和从表
-
-（需要建立关系才有了主从表的角色区分）
-主从表的理解
 现在我们有两张表“分类表”和“商品表”。
 目前从表的声明上来说，没有关系，但是我们有个需求：
-
-商品应该有所属的分类
-
-，这个时候需要将分类表和商品表建立关系，如何建立？
+商品应该有所属的分类，这个时候需要将分类表和商品表建立关系，如何建立？
 按照以上需求分析：
-主键外键的理解
 
+```
 主表是：商品表。主表中，应该有一个字段去关联从表，而这个关联字段就是外键。
 从表是：分类表。从表中，应该有一个字段去关联主表，而这个关联字段就是主键。
+```
 
-1 2 3
+- 主键外键的理解
 
-开课吧
 
-java
-
-高级架构师
 
 如何操作外键
 主表添加外键的格式：
+
+```
+alter table 表名 add [constraint][约束名称] foreign key (主表外键字段) references 从表(从表主键)
+```
+
 主表删除外键的格式：
+
+```
+alter table 表名 drop foreign key 外键约束名称
+```
+
 使用外键目的：
 
-一对一关系（了解）
+```
+保证数据完整性（数据保存在多张表中的时候）
+在互联网项目中，一般情况下，不建议建立外键关系
+```
+
+#### 一对一关系（了解）
 
 在实际工作中，一对一在开发中应用不多，因为一对一完全可以创建成一张表
 
@@ -1776,125 +1052,21 @@ java
 
 建表语句：
 
-alter table 
-
-表名 
-
-add 
-
-[
-
-constraint
-
-][
-
-约束名称
-
-] 
-
-foreign key 
-
-(
-
-主表外键字段
-
-) 
-
-references 
-
-从表
-
-(
-
-从表
-主键
-
-)
-
-1
-1 
-
-alter table 
-
-表名 
-
-drop foreign key 
-
-外键约束名称
-保证数据完整性（数据保存在多张表中的时候）
-在互联网项目中，一般情况下，不建议建立外键关系。
-
-1 2 3
-
-CREATE TABLE 
-
-wife(
-id 
-
-INT 
-
-PRIMARY KEY 
-
-,
-wname 
-
-VARCHAR
-
-(
-
-20
-
-),
-sex 
-
-CHAR
-
-(
-
-1
-
-)
+```
+CREATE TABLE wife(
+	id INT PRIMARY KEY ,
+	wname VARCHAR(20),
+	sex CHAR(1)
 );
 
-CREATE TABLE 
-
-husband(
-id 
-
-INT 
-
-PRIMARY KEY 
-
-,
-hname 
-
-VARCHAR
-
-(
-
-20
-
-),
-sex 
-
-CHAR
-
-(
-
-1
-
-)
+CREATE TABLE husband(
+	id INT PRIMARY KEY ,
+	hname VARCHAR(20),
+	sex CHAR(1)
 );
 
-1 2 3 4 5 6 7 8 9
-10
-11
+```
 
-开课吧
-
-java
-
-高级架构师
 
 一对一关系创建方式1之
 
@@ -1949,11 +1121,11 @@ alter table husband add foreign key (wid) references wife(id);
 
 一对多关系和一对一关系的创建很类似，唯一区别就是外键不唯一。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 注意事项：
 多对多关系创建：
@@ -2238,11 +1410,11 @@ values
 18
 19
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 交叉连接
 
@@ -2418,11 +1590,11 @@ SELECT * FROM A, B
 
 SELECT * FROM A CROSS JOIN B
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 内连接
 
@@ -2466,11 +1638,11 @@ SELECT * FROM A INNER JOIN B ON A.id = B.id
 
 左外连接、右外连接、全外连接
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 案例：
 右外连接:
@@ -2497,31 +1669,6 @@ RIGHT JOIN
 查询结果以主表为主，从表记录匹配不到，则补 
 
 null
-
-MySQL锁
-
-MySQL锁介绍
-
-按照锁的粒度来说，MySQL主要包含三种类型（级别）的锁定机制：
-按照锁的功能来说分为：
-
-共享读锁
-
-和
-
-排他写锁
-
-。
-按照锁的实现方式分为：
-
-悲观锁
-
-和
-
-乐观锁
-
-（使用某一版本列或者唯一列进行逻辑控制）
-表级锁和行级锁的区别：
 
 1 
 
@@ -2562,630 +1709,6 @@ FULL OUTER JOIN
 1 
 
 SELECT * FROM A FULL JOIN B ON A.id = B.id
-\- 
-
-全局锁：锁的是整个
-
-database
-
-。由
-
-MySQL
-
-的
-
-SQL layer
-
-层实现的
-
-\- 
-
-表级锁：锁的是某个
-
-table
-
-。由
-
-MySQL
-
-的
-
-SQL layer
-
-层实现的
-
-\- 
-
-行级锁：锁的是某行数据，也可能锁定行之间的间隙。由某些存储引擎实现，比如
-
-InnoDB
-
-。
-
-1 2 3 4 5
-
-开课吧
-
-java
-
-高级架构师
-
-MySQL表级锁
-
-表级锁介绍
-
-由MySQL SQL layer层实现
-
-MySQL的表级锁有两种：
-MySQL 实现的表级锁定的争用状态变量：
-
-表锁介绍
-
-表锁有两种表现形式：
-手动增加表锁
-查看表锁情况
-
-表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最高，并发度最低；
-行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最低，并发度也最高；
-
-1 2 3
-
-一种是表锁。
-一种是元数据锁（
-
-meta data lock
-
-，
-
-MDL)
-
-。
-
-1 2
-1 
-
-mysql> show status like 'table%';
-\- table_locks_immediate
-
-：产生表级锁定的次数；
-
-\- table_locks_waited
-
-：出现表级锁定争用而发生等待的次数；
-
-1 2
-
-表共享读锁（
-
-Table Read Lock
-
-）
-表独占写锁（
-
-Table Write Lock
-
-）
-
-1 2
-1 
-
-lock table 
-
-表名称 
-
-read
-
-(
-
-write
-
-),
-
-表名称
-
-2 
-
-read
-
-(
-
-write
-
-)
-
-，其他
-
-;
-
-1 
-
-show open tables
-
-;
-
-开课吧
-
-java
-
-高级架构师
-
-删除表锁
-
-表锁演示
-
-环境准备
-读锁演示
-
-1 
-
-unlock tables
-
-;
-
-CREATE TABLE 
-
-mylock (
-id 
-
-int
-
-(
-
-11
-
-) 
-
-NOT 
-
-NULL 
-
-AUTO_INCREMENT
-
-,
-NAME 
-
-varchar
-
-(
-
-20
-
-) 
-
-DEFAULT 
-
-NULL
-
-,
-
-PRIMARY KEY 
-
-(id)
-);
-
-INSERT INTO 
-
-mylock (id,NAME) 
-
-VALUES 
-
-(
-
-1
-
-, 
-
-'a'
-
-);
-
-INSERT INTO 
-
-mylock (id,NAME) 
-
-VALUES 
-
-(
-
-2
-
-, 
-
-'b'
-
-);
-
-INSERT INTO 
-
-mylock (id,NAME) 
-
-VALUES 
-
-(
-
-3
-
-, 
-
-'c'
-
-);
-
-INSERT INTO 
-
-mylock (id,NAME) 
-
-VALUES 
-
-(
-
-4
-
-, 
-
-'d'
-
-);
-
-1 2 3 4 5 6 7 8 9
-10
-
-开课吧
-
-java
-
-高级架构师
-
-写锁演示
-
-元数据锁介绍
-
-MDL不需要显式使用，在访问一个表的时候会被自动加上。MDL的作用是，保证读写的正确性。你可以想象一下，如
-果一个查询正在遍历一个表中的数据，而执行期间另一个线程对这个表结构做变更，删了一列，那么查询线程拿到的
-结果跟表结构对不上，肯定是不行的。
-因此，
-
-在 MySQL 5.5 版本中引入了 MDL
-
-，当对一个表做增删改查操作的时候，加 MDL 读锁；当要对表做结构变
-更操作的时候，加 MDL 写锁。
-读锁之间不互斥，因此你可以有多个线程同时对一张表增删改查。
-读写锁之间、写锁之间是互斥的，用来保证变更表结构操作的安全性。因此，如果有两个线程要同时给一个表
-加字段，其中一个要等另一个执行完才能开始执行。
-
-元数据锁演示
-
-开课吧
-
-java
-
-高级架构师
-
-我们可以看到 session A 先启动，这时候会对表 t 加一个 MDL 读锁。由于 session B 需要的也是 MDL 读
-锁，因此可以正常执行。
-之后 session C 会被 blocked，是因为 session A 的 MDL 读锁还没有释放，而 session C 需要 MDL 写锁，
-因此只能被阻塞。
-如果只有 session C 自己被阻塞还没什么关系，但是之后所有要在表 t 上新申请 MDL 读锁的请求也会被
-session C 阻塞。前面我们说了，所有对表的增删改查操作都需要先申请 MDL 读锁，就都被锁住，等于这个表现
-在完全不可读写了。
-你现在应该知道了，事务中的 MDL 锁，在语句执行开始时申请，但是语句结束后并不会马上释放，而会等到整个事
-务提交后再释放。
-
-MySQL行级锁
-
-行级锁介绍
-
-MySQL的行级锁，是由存储引擎来实现的，这里我们主要讲解InnoDB的行级锁。
-InnoDB的行级锁，按照锁定范围来说，分为三种：
-
-开课吧
-
-java
-
-高级架构师
-
-| 共享锁（S）      | 排他锁（X） | 意向共享锁（IS） | 意向排他锁（IX） |      |
-| ---------------- | ----------- | ---------------- | ---------------- | ---- |
-| 共享锁（S）      | 兼容        | 冲突             | 兼容             | 冲突 |
-| 排他锁（X）      | 冲突        | 冲突             | 冲突             | 冲突 |
-| 意向共享锁（IS） | 兼容        | 冲突             | 兼容             | 兼容 |
-| 意向排他锁（IX） | 冲突        | 冲突             | 兼容             | 兼容 |
-
-InnoDB的行级锁，按照功能来说，分为两种：
-对于UPDATE、DELETE和INSERT语句，InnoDB会自动给涉及数据集加排他锁（X)；
-对于普通SELECT语句，InnoDB不会加任何锁，事务可以通过以下语句显示给记录集加共享锁或排他锁。 
-
-手动添加
-共享锁（S）：
-手动添加排他锁（x）：
-
-InnoDB也实现了表级锁，也就是意向锁，意向锁是mysql内部使用的，不需要用户干预。
-意向锁和行锁可以共存，意向锁的主要作用是为了【全表更新数据】时的性能提升。否则在全表更新数据时，
-需要先检索该范是否某些记录上面有行锁。
-
-InnoDB行锁
-
-是通过给索引上的
-
-索引项加锁来实现的
-
-，因此InnoDB这种行锁实现特点意味着：只有通过索引条
-件检索的数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！
-
-\- 
-
-记录锁（
-
-Record Locks
-
-）
-
-:
-
-锁定索引中一条记录。
-
-\- 
-
-间隙锁（
-
-Gap Locks
-
-）
-
-:
-
-要么锁住索引记录中间的值，要么锁住第一个索引记录前面的值或者最后一个索引记录后面
-的值。
-
-\- Next-Key Locks:
-
-是索引记录上的记录锁和在索引记录之前的间隙锁的组合。
-
-1 2 3 4 5
-
-\- 
-
-共享锁（
-
-S
-
-）：允许一个事务去读一行，阻止其他事务获得相同数据集的排他锁。
-
-\- 
-
-排他锁（
-
-X
-
-）：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享读锁和排他写锁。
-
-1 2
-1 
-
-SELECT 
-
-\* 
-
-FROM table_name WHERE 
-
-... 
-
-LOCK IN SHARE MODE
-
-1 
-
-SELECT 
-
-\* 
-
-FROM table_name WHERE 
-
-... 
-
-FOR UPDATE
-
-\- 
-
-意向共享锁（
-
-IS
-
-）：事务打算给数据行加行共享锁，事务在给一个数据行加共享锁前必须先取得该表的
-
-IS
-
-锁。
-
-\- 
-
-意向排他锁（
-
-IX
-
-）：事务打算给数据行加行排他锁，事务在给一个数据行加排他锁前必须先取得该表的
-
-IX
-
-锁。
-
-1 2
-
-开课吧
-
-java
-
-高级架构师
-
-Innodb所使用的
-
-行级锁定
-
-争用状态查看：
-对于这5个状态变量，比较重要的主要是：
-尤其是当等待次数很高，而且每次等待时长也不小的时候，我们就需要分析系统中为什么会有如此多的等待，然后根
-据分析结果着手指定优化计划。
-
-InnoDB行锁演示
-
-创建表及索引
-行锁定基本演示
-
-1 
-
-mysql> 
-
-show status like 
-
-'innodb_row_lock%'
-
-;
-\- Innodb_row_lock_current_waits
-
-：当前正在等待锁定的数量；
-
-\- Innodb_row_lock_time
-
-：从系统启动到现在锁定总时间长度；
-
-\- Innodb_row_lock_time_avg
-
-：每次等待所花平均时间；
-
-\- Innodb_row_lock_time_max
-
-：从系统启动到现在等待最常的一次所花的时间；
-
-\- Innodb_row_lock_waits
-
-：系统启动后到现在总共等待的次数；
-
-1 2 3 4 5 6 7 8 9
-
-\- Innodb_row_lock_time_avg
-
-（等待平均时长）
-
-\- Innodb_row_lock_waits
-
-（等待总次数）
-
-\- Innodb_row_lock_time
-
-（等待总时长）这三项。
-
-1 2 3 4 5
-
-create table 
-
-test_innodb_lock (a 
-
-int
-
-(
-
-11
-
-),b 
-
-varchar
-
-(
-
-16
-
-)) 
-
-engine
-
-=
-
-innodb
-
-;
-
-create index 
-
-test_innodb_a_idx 
-
-on 
-
-test_innodb_lock(a);
-
-create index 
-
-test_innodb_lock_b_idx 
-
-on 
-
-test_innodb_lock(b);
-
-1 2 3
-
-开课吧
-
-java
-
-高级架构师
-
-| Session a | Session b                                                    |                                                              |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 1         | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2         | mysql> update test_innodb_lock set b = 'b1' where a = 1; Query OK, 1 row affected (0.00 sec) Rows matched: 1 Changed: 1 Warnings: 0 更新，但是不提交 |                                                              |
-| 3         | mysql> update test_innodb_lock set b = 'b2' where a = 1; 被阻塞，等待 |                                                              |
-| 4         | mysql> commit; Query OK, 0 rows affected (0.05 sec) 提交     |                                                              |
-| 5         | mysql> update test_innodb_lock set b = 'b2' where a = 1; Query OK, 0 rows affected (36.14 sec) Rows matched: 1 Changed: 0 Warnings: 0 解除阻塞，更新正常进 行 |                                                              |
-
-| Session a | Session b                                                    |                                                              |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 1         | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2         | mysql> update test_innodb_lock set b = '2' where b = 2000; Query OK, 1 row affected (0.02 sec) Rows matched: 1 Changed: 1 Warnings: 0 | mysql> update test_innodb_lock set b = '3' where b = 3000; 被阻塞，等待 |
-| 3         | mysql> commit; Query OK, 0 rows affected (0.10 sec)          |                                                              |
-| 4         | mysql> update test_innodb_lock set b = '3' where b = 3000; Query OK, 1 row affected (1 min 3.41 sec) Rows matched: 1 Changed: 1 Warnings: 0 阻塞解除，完成更新 |                                                              |
-
-无索引升级为表锁演示
-间隙锁带来的插入问题演示
-
-开课吧
-
-java
-
-高级架构师
-
-| Session a | Session b                                                    |                                                              |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 1         | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2         | mysql> select * from test_innodb_lock; a b 1 b2 3 3 4 4000 5 5000 6 6000 7 7000 8 8000 9 9000 1 b1 9 rows in set (0.00 sec) |                                                              |
-| 3         | mysql> update test_innodb_lock set b = a * 100 where a < 4 and a > 1; Query OK, 1 row affected (0.02 sec) Rows matched: 1 Changed: 1 Warnings: 0 |                                                              |
-| 4         | mysql> insert into test_innodb_lock values(2,'200'); 被阻塞，等待 |                                                              |
-| 5         | mysql> commit; Query OK, 0 rows affected (0.02 sec)          |                                                              |
-| 6         | mysql> insert into test_innodb_lock values(2,'200'); Query OK, 1 row affected (38.68 sec) 阻塞 解除，完成插入 |                                                              |
-
-| Session a | Session b                                                    |                                                              |
-| --------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 1         | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2         | mysql> update test_innodb_lock set b = 'bbbbb' where a = 1 and b = 'b2'; Query OK, 1 row affected (0.00 sec) Rows matched: 1 Changed: 1 Warnings: 0 |                                                              |
-| 3         | mysql> update test_innodb_lock set b = 'bbbbb' where a = 1 and b = 'b1'; 被阻塞 |                                                              |
-| 4         | mysql> commit; Query OK, 0 rows affected (0.02 sec)          |                                                              |
-| 5         | mysql> update test_innodb_lock set b = 'bbbbb' where a = 1 and b = 'b1'; Query OK, 1 row affected (42.89 sec) Rows matched: 1 Changed: 1 Warnings: 0 session 提交事务，阻塞 去除，更新完成 |                                                              |
-
-使用共同索引不同数据的阻塞示例
-
-开课吧
-
-java
-
-高级架构师
-
-| Session a                                                    | Session b                                                    |                                                              |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| 1                                                            | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2                                                            | mysql> update t1 set id = 110 where id = 11; Query OK, 0 rows affected (0.00 sec) Rows matched: 0 Changed: 0 Warnings: 0 |                                                              |
-| 3                                                            | mysql> update t2 set id = 210 where id = 21; Query OK, 1 row affected (0.00 sec) Rows matched: 1 Changed: 1 Warnings: 0 |                                                              |
-| 4                                                            | mysql>update t2 set id=2100 where id=21; 等待sessionb释放资源，被阻塞 |                                                              |
-| 5                                                            | mysql>update t1 set id=1100 where id=11; Query OK,0 rows affected (0.39sec) Rows matched: 0 Changed: 0 Warnings:0 等待 sessiona释放资源，被阻塞 |                                                              |
-| 两个 session 互相等等待对方的资源释放之 后才能释放自己的资源,造成了死锁 |                                                              |                                                              |
-
-死锁演示
 
 MySQL事务
 
@@ -3222,11 +1745,11 @@ Durability（持久性）：事务执行成功后必须全部写入磁盘。
 
 事务开启
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 在MySQL命令行的默认设置下，事务都是自动提交的，即执行SQL语句后就会马上执行COMMIT操作。因此要显式地开
 启一个事务务须使用命令 
@@ -3357,11 +1880,11 @@ select
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 注意事项：
 
@@ -3456,11 +1979,11 @@ tx_isolation=’
 
 隔离级别越高，越能保证数据的完整性和一致性，但是对并发性能的影响也越大。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 组合索引
 
@@ -3590,11 +2113,11 @@ SHOW INDEX FROM table_name
 
 \G
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 逻辑架构图
 
@@ -3627,11 +2150,11 @@ SQL命令传递到解析器的时候会被解析器
 。
 主要功能：
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 | a . 将SQL语句进行语义和语法的分析，分解成数据结构，然后按照不同的操作类型进行分类，然后做出针对性的转 发到后续步骤，以后SQL语句的传递和处理就是基于这个结构的。 b. 如果在分解构成中遇到错误，那么就说明这个sql语句是不合理的 Optimizer: 查询优化器 |
 | ------------------------------------------------------------ |
@@ -3696,11 +2219,11 @@ creat table xxx()engine=InnoDB/Memory/MyISAM
 
 1 2 3 4 5 6
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 | 存储引擎            | 说明                                                         |
 | ------------------- | ------------------------------------------------------------ |
@@ -3735,11 +2258,11 @@ xtraDB存储引擎是由Percona公司提供的存储引擎，该公司还出品�
 
 mysql> show engines;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 待分析查询语句如下：
 我们看到的只是输入一条语句，返回一个结果，却不知道这条语句在 MySQL 内部的执行过程。
@@ -3789,11 +2312,11 @@ ID=
 
 ；
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 也就是说，你执行 create table 建表的时候，如果不指定引擎类型，默认使用的就是 InnoDB。不过，你也可以
 通过指定存储引擎的类型来选择别的引擎，比如在 create table 语句中使用 engine=memory, 来指定使用内存
@@ -3851,11 +2374,11 @@ $user
 
 -p
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 怎么解决这个问题呢？你可以考虑以下两种方案。
 \1. 定期断开长连接。使用一段时间，或者程序里面判断执行过一个占用内存的大查询后，断开连接，之后要查询
@@ -3903,11 +2426,11 @@ mysql> select SQL_CACHE * from T where ID=10
 
 ；
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 一般语法错误会提示第一个出现错误的位置，所以你要关注的是紧接“use near”的内容。
 
@@ -4086,11 +2609,11 @@ to user
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 物理结构
 
@@ -4104,11 +2627,11 @@ MySQL在Linux中的数据索引文件和日志文件都在
 
 日志文件（顺序IO）
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MySQL通过日志记录了数据库操作信息和错误信息。常用的日志文件包括
 
@@ -4195,11 +2718,11 @@ log_warings
 
 log-bin=mysql-bin
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 默认是关闭的。
 
@@ -4291,11 +2814,11 @@ long_query_time=10
 
 SHOW VARIABLES LIKE ‘%datadir%’;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MySQL InnoDB存储引擎，实现的是基于多版本的并发控制协议——
 
@@ -4430,11 +2953,11 @@ delete from table where
 
 1 2 3 4 5
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 从图中，可以看到，一个Update操作的具体流程。当Update SQL被发给MySQL后，MySQL Server会根据where条
 件，读取第一条满足条件的记录，然后InnoDB引擎会将第一条记录返回，并加锁 (current read)。待MySQL
@@ -4488,11 +3011,11 @@ DML
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 \1. 最左前缀匹配原则，非常重要的原则，mysql会一直向右匹配直到遇到范围查询(>、<、between、like)就停
 止匹配，比如a = 1 and b = 2 and c > 3 and d = 4 如果建立(a,b,c,d)顺序的索引，d是用不到索引
@@ -4516,11 +3039,11 @@ MySQL/InnoDB定义的4种隔离级别：
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Read Uncommited
 Read Committed (RC)
@@ -4642,11 +3165,11 @@ id =
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 针对这个问题，该怎么回答？能想象到的一个答案是：
 SQL1：
@@ -4801,11 +3324,11 @@ Serializable
 16
 17
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 组合一：id主键+RC
 
@@ -4837,17 +3360,17 @@ X
 
 锁即可。
 
-开课吧
+
 
 java
 
-高级架构师
 
-开课吧
+
+
 
 java
 
-高级架构师
+
 
 此组合中，id是unique索引，而主键是name列。此时，加锁的情况由于组合一有所不同。由于id是unique索引，因
 此delete语句会选择走id列的索引进行where条件的过滤，在找到id=10的记录后，首先会将unique索引上的id=10
@@ -4903,11 +3426,11 @@ name=’d’,id=10
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 根据此图，可以看到，首先，id列索引上，满足id = 10查询条件的记录，均已加锁。同时，这些记录对应的主键索
 引上的记录也都加上了锁。与组合二唯一的区别在于，组合二最多只有一个满足等值查询的记录，而组合三会将所有
@@ -4941,11 +3464,11 @@ SQL
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 由于id列上没有索引，因此只能走聚簇索引，进行全部扫描。从图中可以看到，满足删除条件的记录有两条，但是，
 聚簇索引上所有的记录，都被加上了X锁。无论记录是否满足条件，全部被加上X锁。既不是加表锁，也不是在满足条
@@ -4999,11 +3522,11 @@ MySQL
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 上面的四个组合，都是在Read Committed隔离级别下的加锁行为，接下来的四个组合，是在Repeatable Read隔离
 级别下的加锁行为。
@@ -5035,17 +3558,17 @@ RC隔离级别允许幻读，而RR隔离级别，不允许存在幻读。
 组合七，Repeatable Read隔离级别，id上有一个非唯一索引，执行delete from t1 where id = 10; 假设选择
 id列上的索引进行条件过滤，最后的加锁行为，是怎么样的呢？同样看下面这幅图：
 
-开课吧
+
 
 java
 
-高级架构师
 
-开课吧
+
+
 
 java
 
-高级架构师
+
 
 此图，相对于组合三：[
 
@@ -5065,11 +3588,11 @@ from t1 where id = 10 for update;)，那么这两次当前读返回的是完全�
 也不会插入满足条件的记录。因此，为了保证[6,c]与[10,b]间，[10,b]与[10,d]间，[10,d]与[11,f]不会插入
 新的满足条件的记录，MySQL选择了用GAP锁，将这三个GAP给锁起来。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Insert操作，如insert [10,aa]，首先会定位到[6,c]与[10,b]间，然后在插入前，会检查这个GAP是否已经被锁
 上，如果被锁上，则Insert不能插入记录。因此，通过第一遍的当前读，不仅将满足条件的记录锁上 (X锁)，与组
@@ -5142,11 +3665,11 @@ GAP
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 如图，这是一个很恐怖的现象。首先，聚簇索引上的所有记录，都被加上了X锁。其次，聚簇索引每条记录间的间隙
 (GAP)，也同时被加上了GAP锁。这个示例表，只有6条记录，一共需要6个记录锁，7个GAP锁。试想，如果表上有
@@ -5198,11 +3721,11 @@ semi-consistent read
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 针对前面提到的简单的SQL，最后一个情况：Serializable隔离级别。对于SQL2： 
 
@@ -5244,11 +3767,11 @@ Serializable
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 在详细分析这条SQL的加锁情况前，还需要有一个知识储备，那就是一个SQL中的where条件如何拆分？在这里，我直
 接给出分析后的结果：
@@ -5279,11 +3802,11 @@ Table Filter对应的过滤条件，则在聚簇索引中读取后，在MySQL Se
 
 结论：
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 死锁原理与分析
 
@@ -5354,11 +3877,11 @@ X
 
 1 2 3 4
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 上面的两个死锁用例。第一个非常好理解，也是最常见的死锁，每个事务执行两条SQL，分别持有了一把锁，然后加
 另一把锁，产生死锁。
@@ -5415,11 +3938,11 @@ SQL
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 了解数据库本身的一些实现细节 (过滤条件提取；Index Condition Pushdown；Semi-Consistent Read)；
 了解死锁产生的原因及分析的方法 (加锁顺序不一致；分析每个SQL的加锁顺序)
@@ -5445,20 +3968,20 @@ id=
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 深色步骤是在MySQL的SQL Layer层实现
 浅色步骤是在MySQL的存储引擎层实现
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 事务日志文件redo和undo
 
@@ -5519,11 +4042,11 @@ https://www.cs.usfca.edu/~galles/visualization/Algorithms.html
 
 B树图示
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 B树是为了磁盘或其它存储设备而设计的一种多叉（下面你会看到，相对于二叉，B树每个内结点有多个分支，即多
 叉）平衡查找树。
@@ -5560,11 +4083,11 @@ B+树叶子节点只会存储数据行（数据文件）的指针，简单来说
 
 1 2
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 这里设表一共有三列,假设我们以 Col1 为主键,则上图是一个 MyISAM 表的主索引(Primary key)示意。可以看出
 MyISAM 的索引文件仅仅保存数据记录的地址。
@@ -5574,11 +4097,11 @@ MyISAM 的索引文件仅仅保存数据记录的地址。
 在 MyISAM 中,主索引和辅助索引(Secondary key)在结构上没有任何区别,只是主索引要求 key 是唯一的,而辅助
 索引的 key 可以重复。如果我们在 Col2 上建立一个辅助索引,则此索引的结构如下图所示
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 同样也是一颗 B+Tree,data 域保存数据记录的地址。
 
@@ -5600,11 +4123,11 @@ java
 数据记录的列作为主键,如果不存在这种列,则MySQL 自动为 InnoDB 表生成一个隐含字段作为主键,类型为长整
 形。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 上图是 InnoDB 主索引(同时也是数据文件)的示意图,可以看到叶节点包含了完整的数据记录。这种索引叫做聚集索
 引。因为 InnoDB 的数据文件本身要按主键聚集,
@@ -5616,11 +4139,11 @@ java
 聚集索引这种实现方式使得按主键的搜索十分高效,但是辅助索引搜索需要检索两遍索引:首先检索辅助索引获得主
 键,然后用主键到主索引中检索获得记录。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 引申:为什么不建议使用过长的字段作为主键?
 
@@ -5633,11 +4156,11 @@ java
 | 为了更形象说明这两种索引的区别, 我们假想一个表如下图存储了 4 行数据。 其中Id 作为主索引, Name 作为辅 |
 | 助索引。 图示清晰的显示了聚簇索引和非聚簇索引的差异：        |
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 为什么使用组合索引
 
@@ -5651,11 +4174,11 @@ java
 
 例如：
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 创建组合索引（相当于建立了col1,col1 col2,col1 col2 col3三个索引）：
 
@@ -5720,21 +4243,21 @@ order by name cid
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 案例演示
 
 1.全值匹配我最爱
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 2.最佳左前缀法则
 
@@ -5760,11 +4283,11 @@ java
 
 手动类型转换，不然会导致索引失效而转向全表扫描
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 4.范围条件右边的列失效
 5.尽量使用覆盖索引
@@ -5808,11 +4331,11 @@ select *
 
 ）判断时，会导致索引失效而转向全表扫描
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 7.索引字段上不要判断null
 8.索引字段使用like不以通配符开头
@@ -5844,11 +4367,11 @@ like
 
 ）时，会导致索引失效而转向全表扫描
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 问题：解决like ‘%字符串%’时，索引失效问题的方法？ 
 
@@ -5871,11 +4394,11 @@ or
 
 时，会导致索引失效而转向全表扫描
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 InnoDB一致性非锁定读
 
@@ -5883,11 +4406,11 @@ InnoDB一致性非锁定读
 行数据的方式。如果读取的行正在执行DELETE或UPDATE操作，这时读取操作不会因此去等待行上锁的释放。相反
 地，InnoDB会去读取行的一个快照。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 上图直观地展现了InnoDB一致性非锁定读的机制。之所以称其为非锁定读，是因为不需要等待行上排他锁的释
 放。快照数据是指该行的之前版本的数据，每行记录可能有多个版本，一般称这种技术为行多版本技术。
@@ -5919,11 +4442,11 @@ mysql> UPDATE test SET id = 3 WHERE id = 1;
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 会话A和会话B示意图
 如上图所示，当会话B提交事务后，会话A再次运行 
@@ -5953,11 +4476,11 @@ programming languages to implement transactional memory.
 0，A、B用户各有存款1000，所以所有用户的存款总额为2000。但是在查询过程中，用户A会向用户B进行转账操作。
 转账操作和查询总额操作的时序图如下图所示。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 转账和查询的时序图
 如果没有任何的并发控制机制，查询总额事务先读取了用户A的账户存款，然后转账事务改变了用户A和用户B的账
@@ -5966,11 +4489,11 @@ java
 使用锁机制可以解决上述的问题。查询总额事务会对读取的行加锁，等到操作结束后再释放所有行上的锁。因为用
 户A的存款被锁，导致转账操作被阻塞，直到查询总额事务提交并将所有锁都释放。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 使用锁机制
 但是这时可能会引入新的问题，当转账操作是从用户B向用户A进行转账时会导致死锁。转账事务会先锁住用户B的
@@ -5979,11 +4502,11 @@ java
 户存款，查询总额事务读取用户B存款时不会读取转账事务修改后的数据，而是读取本事务开始时的数据副本(在
 REPEATABLE READ隔离等级下)。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 使用MVVC机制
 MVCC使得数据库读不会对数据加锁，普通的SELECT请求不会加锁，提高了数据库的并发处理能力。借助MVCC，数
@@ -6007,11 +4530,11 @@ update undo log 不能在事务提交时就进行删除，而是将事务提交�
 藏字段：分别对应该行的rowid、事务号db_trx_id和回滚指针db_roll_ptr，其中db_trx_id表示最近修改的事务
 的id，db_roll_ptr指向回滚段中的undo log。如下图所示。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 初始状态
 当事务2使用UPDATE语句修改该行数据时，会首先使用排他锁锁定改行，将该行当前的值复制到undo log中，然
@@ -6019,11 +4542,11 @@ java
 第一次修改
 当事务3进行修改与事务2的处理过程类似，如下图所示。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 第二次修改
 REPEATABLE READ隔离级别下事务开始后使用MVVC机制进行读取时，会将当时活动的事务id记录下来，记录到
@@ -6051,11 +4574,11 @@ InnoDB的事务
 如数家珍。但是聊起事务或者ACID的底层实现原理，往往言之不详，不明所以。所以，今天我们就一起来分析和探
 讨InnoDB的事务机制，希望能建立起对事务底层实现原理的具体了解。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 事务的四大特性
 数据库事务具有ACID四大特性。ACID是以下4个词的缩写：
@@ -6082,11 +4605,11 @@ INSERT INTO goods VALUES(1, 10);
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 示例具体语句和执行顺序
 这个示例可以体现数据库事务的很多特性，我们一一来介绍。首先会话一的操作2更新了id为1的货物的数量，但
@@ -6136,11 +4659,11 @@ log用于在崩溃时恢复数据，undo log用于对事务的影响进行撤销
 Commit机制保证事务提交后redo log日志都已经持久化。 开启一个事务后，用户可以使用COMMIT来提交，也可
 以用ROLLBACK来回滚。其中COMMIT或者ROLLBACK执行成功之后，数据一定是会被全部保存或者全部回滚到最初状态
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 的，这也体现了事务的原子性。但是也会有很多的异常情况，比如说事务执行中途连接断开，或者是执行COMMIT或
 者ROLLBACK时发生错误，Server Crash等，此时数据库会自动进行回滚或者重启之后进行恢复。
@@ -6173,11 +4696,11 @@ checkpoint，从而减少数据库崩溃恢复的时间。检查点的信息在�
 然，在崩溃恢复中还需要回滚没有提交的事务。由于回滚操作需要undo日志的支持，undo日志的完整性和可靠性需
 要redo日志来保证，所以崩溃恢复先做redo恢复数据，然后做undo回滚。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 在事务执行的过程中，除了记录redo log，还会记录一定量的undo log。undo log记录了数据在每个操作前的
 状态，如果事务执行过程中需要回滚，就可以根据undo log进行回滚操作。
@@ -6189,11 +4712,11 @@ undo log的产生会伴随着redo log的产生，这是因为undo log也需要�
 滚段和叶节点段和非叶节点段，而三者都有对应的页结构。
 我们再来总结一下数据库事务的整个流程，如下图所示。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 事务的相关流程
 事务进行过程中，每次sql语句执行，都会记录undo log和redo log，然后更新数据形成脏页，然后redo log按
@@ -6228,11 +4751,11 @@ InnoDB行锁算法
 
 MySQL性能分析篇
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 慢查询日志
 
@@ -6284,11 +4807,11 @@ MySQL的慢查询日志功能，
 查看是否开启慢查询功能
 参数说明：
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 临时开启慢查询功能
 
@@ -6386,11 +4909,11 @@ long_query_time
 
 1 2 3 4
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 格式说明：
 
@@ -6453,11 +4976,11 @@ Rows_examined,
 
 1
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 -t：是top n的意思，即为返回前面多少条的数据
 -g：后边可以写一个正则匹配模式，大小写不敏感的
@@ -6505,11 +5028,11 @@ install
 
 yum install -y perl-ExtUtils-CBuilder perl-ExtUtils-MakeMaker
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 使用pt-query-digest查看慢查询日志
 
@@ -6608,11 +5131,11 @@ rows
 
 Extra
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 simple
 
@@ -6722,11 +5245,11 @@ range
 
 级别。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 system
 
@@ -6795,11 +5318,11 @@ o
 
 ；
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 针对非唯一性索引
 
@@ -6870,11 +5393,11 @@ o
 
 ；
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 | index_merge                                                  |
 | ------------------------------------------------------------ |
@@ -6903,11 +5426,11 @@ all（重要）
 
 key_len
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 用于处理查询的索引长度，如果是单列索引，那就整个索引长度算进去，如果是多列索引，那么查询不一定都
 能使用到所有的列，具体使用到了多少个列的索引，这里就会计算进去，没有使用到的列，这里不会计算进
@@ -6965,11 +5488,11 @@ using index（重要）
 如果同时出现Using Where ，说明索引被用来执行查找索引键值
 如果没有同时出现Using Where ，表明索引用来读取数据而非执行查找动作。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 using join buffer（block nested loop），using join buffer（batched key accss）
 
@@ -7005,11 +5528,11 @@ ICP
 擎层，不符合检查条件和限制条件的数据，直接不读取，这样就大大减少了存储引擎扫描的记录数量。extra列
 显示using index condition
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 firstmatch(tb_name)
 
@@ -7094,11 +5617,11 @@ Status和Duratio
 
 n两列
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 show profile 
 
@@ -7133,11 +5656,11 @@ show variables like
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 开启profile功能
 
@@ -7183,11 +5706,11 @@ profiling=
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 执行 show profiles 查看分析列表
 查询第二条语句的执行情况
@@ -7213,11 +5736,11 @@ for query
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MySQL性能优化篇
 
@@ -7250,11 +5773,11 @@ innodb_buffer_pool_size
 
 4/5.
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 降低磁盘写入次数
 
@@ -7375,11 +5898,11 @@ SELECT * FROM user WHERE username=’
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 原SQL（如果 
 
@@ -7508,11 +6031,11 @@ SELECT * FROM user where birthday = now();
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 binlog介绍和relay日志
 
@@ -7532,11 +6055,11 @@ mysqlbinlog --base64-output=decode-rows -v -v mysql-bin
 
 binlog
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 主服务器配置
 
@@ -7700,11 +6223,11 @@ FLUSH PRIVILEGES
 
 ;
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 从服务器配置
 
@@ -7789,11 +6312,11 @@ mysql>change master to master_host='192.168.10.135',master_port=3306,master_user
 
 1 2 3 4 5 6 7
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 语句中间不要断开， 
 
@@ -7886,11 +6409,11 @@ YES
 
 1 2 3 4 5 6
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 名词解释：
 注意事项：
@@ -7913,11 +6436,11 @@ MySQL
 
 的主从复制，只会保证主机对外提供服务，而从机是不对外提供服务的，只是在后台为主机进行备份。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MySQL-Proxy安装
 
@@ -8058,11 +6581,11 @@ chmod
 
 mysql-proxy.cnf
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MySQL-Proxy启动域测试
 
@@ -8134,11 +6657,11 @@ mysql -uroot -proot -h192
 
 -P4040
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 按照日期：按照年月日，将数据切分到不同的表或者库中
 按照范围：可以对某一列按照范围进行切分，不同的范围切分到不同的表或者数据库中。
@@ -8191,11 +6714,11 @@ http://www.mycat.org.cn/
 
 Mycat架构
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Mycat核心概念
 
@@ -8226,11 +6749,11 @@ Mycat主要解决的问题
 
 Mycat对多数据库的支持
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Mycat分片策略
 
@@ -8238,11 +6761,11 @@ MyCAT支持水平分片与垂直分片：
 水平分片：一个表格的数据分割到多个节点上，按照行分隔。
 垂直分片：一个数据库中多个表格A，B，C，A存储到节点1上，B存储到节点2上，C存储到节点3上。
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 MyCAT通过定义表的分片规则来实现分片，每个表格可以捆绑一个分片规则，每个分片规则指定一个分片字段并绑定
 一个函数，来实现动态分片算法。
@@ -8317,11 +6840,11 @@ Mycat-server-1.6-RELEASE-20161028204710-linux.tar.gz
 
 1 2 3 4
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Mycat分片
 
@@ -8601,11 +7124,11 @@ password
 24
 25
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 server.xml配置
 
@@ -8784,11 +7307,11 @@ partition-hash-int.txt
 13
 14
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 property 
 
@@ -8921,11 +7444,11 @@ name
 
 1 2
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 配置说明：
 
@@ -9243,11 +7766,11 @@ offerId
 18
 19
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 如果需要平均分配设置：平均分为4分片，partitionCount*partitionLength=1024
 
@@ -9469,11 +7992,11 @@ autopartition-long.txt
 10
 11
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 四、求模法
 
@@ -9572,11 +8095,11 @@ name
 10
 11
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 配置说明：
 
@@ -9784,11 +8307,11 @@ partition-pattern.txt
 11
 12
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 patternValue 
 
@@ -9939,11 +8462,11 @@ partition-pattern.txt
 11
 12
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 prefixLength 
 
@@ -10015,11 +8538,11 @@ A-Z
 15
 16
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 配置说明：
 
@@ -10156,11 +8679,11 @@ name
 12
 13
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 配置说明：
 
@@ -10368,11 +8891,11 @@ setHashSlice
 11
 12
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 十、一致性hash
 
@@ -10694,11 +9217,11 @@ murmur hash
 17
 18
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 把商品表分片存储到三个数据节点上。
 
@@ -10780,11 +9303,11 @@ CHARSET
 
 1 2 3 4 5 6
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 业务表
 服务器分配
@@ -11220,11 +9743,11 @@ comment
 42
 43
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 mycat：
 
@@ -11328,11 +9851,11 @@ MYCATSEQ_DETAIL_ID_SQUE;
 
 1 2 3
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 配置tableRule标签
 注意事项：name 要全局唯一
@@ -11570,11 +10093,11 @@ name
 
 1 2 3 4 5 6 7 8 9
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 dataNode
 
@@ -12153,11 +10676,11 @@ url
 59
 60
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 重启mycat，使用SQLyog连接到mycat，并执行建表语句。
 
@@ -13081,11 +11604,11 @@ INSERT INTO
 40
 41
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 查看插入的数据是否按照id取模分片。
 
@@ -13346,11 +11869,11 @@ MYCATSEQ_USER_ID_SQUE,
 
 1 2 3 4 5 6 7 8
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 说明：商家225 在109.128 上，tb_seller_order表根据seller_user_id 取模分片，所有此订单数据存储在与
 user id为225 的商家同一分片 tb_order_detail 表使用的是与tb_seller_order ER 分片，使用order_id 关
@@ -13732,11 +12255,11 @@ MYCATSEQ_DETAIL_ID_SQUE,
 
 1 2 3 4 5 6 7 8 9
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 mysql> select * from tb_order_detail; +----------------+-----------------+----------+--------
 --+-------------+------+------------+ | seller_user_id | order_detail_id | order_id |
@@ -13771,11 +12294,11 @@ MyCat的读写分离是建立在MySQL主从复制基础之上实现的，所以�
 准的读写分离是主从模式，一个写节点Master后面跟着多个读节点，读节点的数量取决于系统的压力，通常是1-3个
 读节点的配置
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 Mycat实现的读写分离和自动切换机制，需要mysql的主从复制机制配合。
 
@@ -13982,11 +12505,11 @@ password
 11
 12
 
-开课吧
+
 
 java
 
-高级架构师
+
 
 “readHost是从属于writeHost的，即意味着它从那个writeHost获取同步数据，因此，当它所属的writeHost宕
 机了，则它也不会再参与到读写分离中来，即“不工作了”，这是因为此时，它的数据已经“不可靠”了。基于这个
@@ -14010,8 +12533,7 @@ slaveThreshold="100"，此时意味着开启MySQL主从复制状态绑定的读�
 总结
 作业
 
-开课吧
+
 
 java
 
-高级架构师
