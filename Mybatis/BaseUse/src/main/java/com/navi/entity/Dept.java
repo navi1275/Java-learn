@@ -17,11 +17,13 @@ public class Dept implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private Integer deptno;
+    private Integer id;
 
-    private String dname;
+    private String deptNo;
 
-    private String loc;
+    private String deptName;
+
+    private String location;
 
 
 }

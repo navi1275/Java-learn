@@ -5,12 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.navi</groupId>
-    <artifactId>Web</artifactId>
+    <artifactId>algorithms</artifactId>
     <version>1.0-SNAPSHOT</version>
 
 
-    <modules>
-        <module>Ssm</module>
-        <module>Servlet</module>
-    </modules>
 </project>

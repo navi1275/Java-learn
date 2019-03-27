@@ -2,6 +2,7 @@ package com.navi;
 
 import com.navi.entity.Dept;
 import com.navi.mapper.DeptMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -10,6 +11,8 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Test01 Class
@@ -18,7 +21,7 @@ import java.io.InputStream;
  * @date 2018-12-17
  * @since 1.0.0
  */
-
+@Slf4j
 public class Test01 {
 
     @Test
@@ -27,13 +30,16 @@ public class Test01 {
         SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
         SqlSessionFactory factory = builder.build(is);
         SqlSession sqlSession = factory.openSession();
-
-        Dept o = sqlSession.selectOne("DeptMapper.selectByNo", 111);
-        System.out.println(o);
-
         DeptMapper mapper = sqlSession.getMapper(DeptMapper.class);
-        Dept o1 = mapper.selectById(111);
-        System.out.println(o1);
+
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("id", "");
+        mapper.selectByNo(map1);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", 0);
+        Dept o1 = mapper.selectById(map);
+        // System.out.println(o1);
 
     }
 

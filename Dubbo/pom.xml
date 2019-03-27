@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.navi</groupId>
-    <artifactId>Web</artifactId>
+    <artifactId>Dubbo</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-
-
     <modules>
-        <module>Ssm</module>
-        <module>Servlet</module>
+        <module>SamRpc</module>
     </modules>
+
+
 </project>
