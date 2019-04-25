@@ -34,4 +34,8 @@
         <setting name="defaultStatementTimeout" value="25000"/>
     </settings>
 
+    <typeAliases>
+        <typeAlias type="com.navi.entity.Dept" alias="Dept"/>
+    </typeAliases>
+
 </configuration>

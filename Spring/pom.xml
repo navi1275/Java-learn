@@ -6,11 +6,11 @@
 
     <packaging>war</packaging>
     <groupId>com.navi</groupId>
-    <artifactId>SpringLearn</artifactId>
+    <artifactId>Spring</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <spring.version>5.0.7.RELEASE</spring.version>
+        <spring.version>5.1.3.RELEASE</spring.version>
     </properties>
 
     <dependencies>

@@ -5,7 +5,7 @@ import java.util.ArrayDeque;
 /**
  * QueueTest Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-18
  * @since 1.0.0
  */
@@ -15,7 +15,7 @@ public class QueueTest {
 
         ArrayDeque deque = new ArrayDeque();
 
-        for (int i = 0; i < 100; i++){
+        for (int i = 0; i < 10; i++){
             deque.addFirst(i);
         }
 

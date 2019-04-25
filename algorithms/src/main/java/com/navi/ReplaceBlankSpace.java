@@ -4,7 +4,7 @@ package com.navi;
  * ReplaceBlankSpace Class
  * 剑指offer：请实现一个函数，将一个字符串中的每个空格替换成“%20”。例如，当字符串为We Are Happy.则经过替换之后的字符串为We%20Are%20Happy。
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-27
  * @since 1.0.0
  */

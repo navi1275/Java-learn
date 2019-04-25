@@ -5,7 +5,7 @@ import com.navi.factory.ProxyFactory;
 /**
  * ReferenceConfig Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-22
  * @since 1.0.0
  */

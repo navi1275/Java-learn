@@ -3,13 +3,14 @@ package com.navi;
 /**
  * TestSpring Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2018-12-06
  * @since 1.0.0
  */
 
 import com.navi.entity.Dept;
-import com.navi.proxy.multilevel.service.IDeptService;
+import com.navi.mapper.DeptMapper;
+import com.navi.service.IDeptService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,10 +26,19 @@ public class TestSpring {
     @Resource
     private IDeptService deptService;
 
+    @Resource
+    private DeptMapper deptMapper;
+
     @Test
     public void test1(){
 
         Dept dept = deptService.selectById(111);
+        System.out.println(dept);
+    }
+
+    @Test
+    public void test2(){
+        Dept dept = deptMapper.selectByNo(2);
         System.out.println(dept);
     }
 }

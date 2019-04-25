@@ -1,0 +1,38 @@
+server:
+  port: 9001
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+
+spring:
+  application:
+    name: navi-zuul-gateway
+
+zuul:
+  routes:
+    service8080:
+      path: /navi8080/**
+      serviceId: ribbon-route
+  ratelimit:
+    enabled: true
+    default-policy:
+      refresh-interval: 3
+      limit: 3
+      quota: 1
+      type:
+        - user
+        - origin
+        - url
+
+ribbon-route:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+    NIWSServiceListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    listOfServers: localhost:8081,localhost:8088
+
+ribbon:
+  eureka:
+    enabled: false

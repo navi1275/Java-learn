@@ -1,0 +1,21 @@
+server:
+  port: 9000
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+
+spring:
+  application:
+    name: navi-zuul-gateway
+
+zuul:
+  routes:
+    service8080:
+      path: /navi8080/**
+      serviceId: navi-demo-consumer
+    service8090:
+      path: /navi8088/**
+      serviceId: navi-demo-consumer-8088

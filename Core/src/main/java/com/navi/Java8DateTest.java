@@ -10,7 +10,7 @@ import java.time.temporal.TemporalUnit;
 /**
  * Java8DateTest Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-27
  * @since 1.0.0
  */

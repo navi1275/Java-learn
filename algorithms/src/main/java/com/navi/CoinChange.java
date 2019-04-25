@@ -3,7 +3,7 @@ package com.navi;
 /**
  * CoinChange Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-02-27
  * @since 1.0.0
  */

@@ -1,0 +1,32 @@
+server:
+  port: 8081
+
+
+
+spring:
+  application:
+    name: navi-demo-consumer
+
+eureka:
+  instance:
+    instance-id: navi-demo-consumer-8081
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+
+  compression:
+    request:
+      enabled: true
+      min-request-size: 2048
+      mime-types: ["text/xml", "application/json", "application/xml"]
+    response:
+      enabled: true
+

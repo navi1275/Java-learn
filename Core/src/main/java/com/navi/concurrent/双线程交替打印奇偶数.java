@@ -7,7 +7,7 @@ import java.util.concurrent.Semaphore;
 /**
  * 双线程交替打印奇偶数 Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-14
  * @since 1.0.0
  */

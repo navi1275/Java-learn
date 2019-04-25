@@ -4,7 +4,7 @@ package com.navi;
  * CycleDetection Class
  * 链表环形检测
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-22
  * @since 1.0.0
  */

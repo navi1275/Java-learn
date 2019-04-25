@@ -5,7 +5,7 @@ import org.springframework.context.ApplicationContext;
 /**
  * IoCTest Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2018-12-12
  * @since 1.0.0
  */

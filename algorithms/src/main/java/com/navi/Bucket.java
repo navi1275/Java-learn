@@ -8,7 +8,7 @@ import java.util.List;
  * Bucket Class
  *
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-02-18
  * @since 1.0.0
  */
@@ -100,6 +100,10 @@ public class Bucket {
         System.out.println(-Integer.MIN_VALUE == Integer.MIN_VALUE);
 
         System.out.println(Math.round(-1.5));
+        System.out.println(Math.round(-2.5));
+        System.out.println(Math.round(-3.5));
+
+
 
 
     }

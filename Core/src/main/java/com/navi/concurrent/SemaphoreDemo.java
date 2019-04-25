@@ -10,7 +10,7 @@ import java.util.concurrent.Semaphore;
 /**
  * SemaphoreDemo Class
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-15
  * @since 1.0.0
  */

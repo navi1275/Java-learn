@@ -19,7 +19,7 @@ import java.util.List;
  * 输出: ""
  * 解释: 输入不存在公共前缀。
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-27
  * @since 1.0.0
  */

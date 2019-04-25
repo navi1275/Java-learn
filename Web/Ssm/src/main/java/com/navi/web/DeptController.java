@@ -2,7 +2,7 @@ package com.navi.web;
 
 
 import com.navi.entity.Dept;
-import com.navi.proxy.multilevel.service.IDeptService;
+import com.navi.service.IDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -29,7 +29,7 @@ public class DeptController {
     @RequestMapping("/hello")
     public String hello(HttpServletRequest request){
         Dept dept = deptService.selectById(111);
-        request.setAttribute("deptName", dept.getDname());
+        request.setAttribute("deptName", dept.getDeptName());
         return "hello";
     }
 

@@ -6,7 +6,7 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
  * KmpDemo Class
  * KMP算法，字符串子串查找问题
  *
- * @author ganxiongfeng@foresee.com.cn
+ * @author navi
  * @date 2019-03-26
  * @since 1.0.0
  */
