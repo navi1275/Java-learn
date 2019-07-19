@@ -4,16 +4,29 @@
 <mapper namespace="com.navi.mapper.DeptMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="Dept">
+    <resultMap id="BaseResultMap" type="com.navi.entity.Dept">
         <id column="id" property="id"/>
         <result column="dept_no" property="deptNo"/>
         <result column="dept_name" property="deptName"/>
         <result column="location" property="location"/>
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id, dept_no, dept_name, location
+    </sql>
+
     <select id="selectByNo" resultMap="BaseResultMap">
         select * from dept
             where dept_no = #{no}
     </select>
+
+    <!--<insert id="insert" parameterType="com.navi.entity.Dept">-->
+        <!--insert into dept(-->
+       <!--<include refid="Base_Column_List"/>-->
+        <!--)-->
+        <!--value (#{id}, #{deptNo}, #{deptName}, #{location});-->
+    <!--</insert>-->
+
+
 
 </mapper>

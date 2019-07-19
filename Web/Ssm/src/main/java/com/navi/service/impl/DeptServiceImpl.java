@@ -1,29 +1,31 @@
 package com.navi.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.navi.entity.Dept;
 import com.navi.mapper.DeptMapper;
 import com.navi.service.IDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
  *  服务实现类
  * </p>
  *
- * @author ganxf
+ * @author navi
  * @since 2018-12-06
  */
 @Service
-// public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
-public class DeptServiceImpl implements IDeptService{
-
-    @Autowired
-    private DeptMapper deptMapper;
+public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
 
     @Override
-    public Dept selectById(Integer no){
-        return deptMapper.selectByNo(no);
+    @Transactional(rollbackFor = RuntimeException.class)
+    public boolean insertDept(Dept dept) {
+        Integer count = baseMapper.insert(dept);
+        System.out.println("插入 " + count + " 条记录");
+        int i = 1 / 0;
+        return retBool(count);
     }
 
 }

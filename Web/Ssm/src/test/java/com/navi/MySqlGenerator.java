@@ -1,12 +1,12 @@
 package com.navi;
 
 
+import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.generator.AutoGenerator;
 import com.baomidou.mybatisplus.generator.InjectionConfig;
 import com.baomidou.mybatisplus.generator.config.*;
 import com.baomidou.mybatisplus.generator.config.converts.MySqlTypeConvert;
 import com.baomidou.mybatisplus.generator.config.rules.DbColumnType;
-import com.baomidou.mybatisplus.generator.config.rules.DbType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
@@ -24,7 +24,7 @@ public class MySqlGenerator {
 
     private static final boolean FILE_OVERRIDE = true;
 
-    private static final String AUTHOR = "ganxf";
+    private static final String AUTHOR = "navi";
     private static final String OUT_PUT_DIR;
     private static final String PARENT_PACKAGE = "com.navi";
     private static final String MODULE_NAME = "";
@@ -73,15 +73,15 @@ public class MySqlGenerator {
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
         dsc.setDbType(DbType.MYSQL);
-        dsc.setTypeConvert(new MySqlTypeConvert() {
-            // 自定义数据库表字段类型转换【可选】
-            @Override
-            public DbColumnType processTypeConvert(String fieldType) {
-                System.out.println("转换类型：" + fieldType);
-                // 注意！！processTypeConvert 存在默认类型转换，如果不是你要的效果请自定义返回、非如下直接返回。
-                return super.processTypeConvert(fieldType);
-            }
-        });
+        // dsc.setTypeConvert(new MySqlTypeConvert() {
+        //     // 自定义数据库表字段类型转换【可选】
+        //     @Override
+        //     public DbColumnType processTypeConvert(String fieldType) {
+        //         System.out.println("转换类型：" + fieldType);
+        //         // 注意！！processTypeConvert 存在默认类型转换，如果不是你要的效果请自定义返回、非如下直接返回。
+        //         // return super.processTypeConvert(gc, fieldType);
+        //     }
+        // });
         dsc.setDriverName(DRIVER_NAME);
         dsc.setUsername(USERNAME);
         dsc.setPassword(PASSWORD);
@@ -97,7 +97,7 @@ public class MySqlGenerator {
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         // strategy.setExclude(new String[]{"test"}); // 排除生成的表
         // 自定义实体父类
-        //strategy.setSuperEntityClass("com.foresee.dzswj.model.YsdjPermission");
+        //strategy.setSuperEntityClass("");
         // 自定义实体，公共字段
         // strategy.setSuperEntityColumns(new String[] { "test_id", "age" });
         // 自定义 mapper 父类

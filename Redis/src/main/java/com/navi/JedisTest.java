@@ -33,7 +33,9 @@ public class JedisTest {
 
             String s = jedis.get(key);
             User user = JSON.parseObject(s, User.class);
+
             System.out.println(user);
+
         }
 
     }

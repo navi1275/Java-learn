@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  *  前端控制器
  * </p>
  *
- * @author ganxf
+ * @author navi
  * @since 2018-12-06
  */
 @Controller
@@ -28,7 +28,7 @@ public class DeptController {
 
     @RequestMapping("/hello")
     public String hello(HttpServletRequest request){
-        Dept dept = deptService.selectById(111);
+        Dept dept = deptService.getById(111);
         request.setAttribute("deptName", dept.getDeptName());
         return "hello";
     }
@@ -36,7 +36,7 @@ public class DeptController {
     @RequestMapping("/hello2")
     @ResponseBody
     public Object hello2(){
-        return deptService.selectById(111);
+        return deptService.getById(111);
     }
 
 }

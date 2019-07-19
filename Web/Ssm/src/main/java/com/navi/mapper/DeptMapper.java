@@ -1,5 +1,6 @@
 package com.navi.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.navi.entity.Dept;
 
 /**
@@ -7,11 +8,11 @@ import com.navi.entity.Dept;
  *  Mapper 接口
  * </p>
  *
- * @author ganxf
+ * @author navi
  * @since 2018-12-06
  */
-// public interface DeptMapper extends BaseMapper<Dept> {
-public interface DeptMapper{
+public interface DeptMapper extends BaseMapper<Dept> {
+// public interface DeptMapper{
 
     Dept selectByNo(Integer no);
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.navi.mapper.DeptMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="Dept">
+        <id column="id" property="id"/>
+        <result column="dept_no" property="deptNo"/>
+        <result column="dept_name" property="deptName"/>
+        <result column="location" property="location"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <!--id, dept_no as "deptNo", dept_name as "deptName", location-->
+    <sql id="Base_Column_List">
+        id, dept_no, dept_name
+    </sql>
+
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+        select
+         #{param.id} as id, dept_no, dept_name
+        from dept
+        <if test="param.id != null and param.id != ''">
+            where id = #{param.id}
+        </if>
+    </select>
+
+    <select id="selectByNo" resultType="Dept" parameterType="java.util.HashMap">
+        select * from dept
+        <if test="param.id == 0">
+            where id = #{param.id}
+        </if>
+    </select>
+
+</mapper>

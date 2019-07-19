@@ -30,9 +30,20 @@ public class TestSpring {
     private DeptMapper deptMapper;
 
     @Test
+    public void test3(){
+        Dept dept = new Dept();
+        dept.setId(100111);
+        dept.setDeptNo("dept01111");
+        dept.setDeptName("商务部111");
+        dept.setLocation("广州市黄埔区");
+        boolean save = deptService.insertDept(dept);
+        System.out.println(save);
+    }
+
+    @Test
     public void test1(){
 
-        Dept dept = deptService.selectById(111);
+        Dept dept = deptService.getById(100);
         System.out.println(dept);
     }
 

@@ -12,7 +12,10 @@ import java.util.Objects;
  */
 public class LRUCache {
 
+    //用hashmap存储值
     private HashMap<Integer, LinkedNode> data = new HashMap<>();
+    //使用双向链表来存储节点实现最近使用
+    //定义值为null的头尾节点
     private LinkedNode head;
     private LinkedNode tail;
     private int count;
@@ -55,13 +58,18 @@ public class LRUCache {
     private void addNode(LinkedNode node) {
         int key = node.key;
 
-        if(count == capacity){
-            deleteNode(tail.prev);
-        }
+        //包含当前节点，应该先删除
         if(data.containsKey(key)){
             deleteNode(node);
         }
 
+        //容量满了，应该删除最后的节点
+        if(count == capacity){
+            deleteNode(tail.prev);
+        }
+
+
+        //插入节点
         LinkedNode next = head.next;
         head.next = node;
         node.prev = head;

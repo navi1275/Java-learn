@@ -1,5 +1,6 @@
 package com.navi.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.navi.entity.Dept;
 
 /**
@@ -7,12 +8,11 @@ import com.navi.entity.Dept;
  *  服务类
  * </p>
  *
- * @author ganxf
+ * @author navi
  * @since 2018-12-06
  */
-// public interface IDeptService extends IService<Dept> {
-public interface IDeptService{
+public interface IDeptService extends IService<Dept> {
 
-    Dept selectById(Integer no);
+    boolean insertDept(Dept dept);
 
 }

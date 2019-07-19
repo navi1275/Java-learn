@@ -39,5 +39,7 @@ public class CuratorTest {
         client.create().withMode(CreateMode.EPHEMERAL).forPath("/hello2");
 
         Thread.sleep(5000);
+
+
     }
 }
