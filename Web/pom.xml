@@ -10,7 +10,7 @@
 
 
     <modules>
-        <module>Ssm</module>
-        <module>Servlet</module>
+        <module>web-ssm</module>
+        <module>web-servlet</module>
     </modules>
 </project>

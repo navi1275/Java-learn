@@ -6,7 +6,7 @@
 
     <packaging>war</packaging>
     <groupId>com.navi</groupId>
-    <artifactId>Ssm</artifactId>
+    <artifactId>web-ssm</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>
