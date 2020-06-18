@@ -1,4 +1,4 @@
-package com.navi.leetcode;
+package com.navi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2019-04-04
  * @since 1.0.0
  */
-public class Solution22 {
+public class 括号生成 {
 
     public static void main(String[] args) {
         long start = System.currentTimeMillis();

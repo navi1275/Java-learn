@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2019-04-04
  * @since 1.0.0
  */
-public class Solution92 {
+public class LinkedListTest {
 
     private static class ListNode {
         int val;

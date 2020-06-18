@@ -8,7 +8,7 @@ package com.navi;
  * @date 2019-04-19
  * @since 1.0.0
  */
-public class Queen {
+public class 八皇后问题 {
 
     private static int[][] array = new int[8][8];
     private static int total = 0;
@@ -68,7 +68,7 @@ public class Queen {
     }
 
     public static void main(String[] args) {
-        Queen q = new Queen();
+        八皇后问题 q = new 八皇后问题();
         q.findQueen(0);
         System.out.println("八皇后问题一共有 " + total + " 种解");
     }
