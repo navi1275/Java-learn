@@ -18,6 +18,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Service
+// feign客户端，调用哪个服务
 @FeignClient("navi-demo-provider")
 @RequestMapping("/provider/dept")
 public interface DeptService {

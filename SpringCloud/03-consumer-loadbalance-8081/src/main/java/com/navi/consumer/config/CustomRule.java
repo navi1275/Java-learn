@@ -9,6 +9,7 @@ import java.util.Random;
 
 /**
  * CustomRule Class
+ * 从所有可用的 provider 中排除掉指定端口号的 provider，剩 余 provider 进行随机选择。
  *
  * @author navi
  * @date 2019-04-16
@@ -29,10 +30,13 @@ public class CustomRule implements IRule {
 
     @Override
     public Server choose(Object key) {
+        // 获取所有可用的服务
         List<Server> reachableServers = getLoadBalancer().getReachableServers();
 
+        // 获取可用的服务
         List<Server> availableServers = getAvailableServers(reachableServers);
 
+        // 随机选择服务
         return getAvailableRandomServer(availableServers);
     }
 

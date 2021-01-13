@@ -1,8 +1,6 @@
 server:
   port: 8081
 
-
-
 spring:
   application:
     name: navi-demo-consumer
@@ -14,18 +12,23 @@ eureka:
     service-url:
       defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
 
-
+# openfeign 配置
 feign:
   client:
     config:
       default:
+#        连接提供者的超时时限
         connectTimeout: 5000
+#        获取响应的超时实现
         readTimeout: 10000
 
+# Feign 支持对请求（Feign 客户端向提供者的请求）和响应（Feign 客户端向客户端浏览 器的响应）进行 Gzip 压缩以提高通信效率。
   compression:
     request:
       enabled: true
+#      压缩的最小文件大小
       min-request-size: 2048
+#      压缩指定类型的请求
       mime-types: ["text/xml", "application/json", "application/xml"]
     response:
       enabled: true

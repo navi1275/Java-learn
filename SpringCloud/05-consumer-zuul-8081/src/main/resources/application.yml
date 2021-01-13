@@ -1,0 +1,48 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: navi-demo-consumer
+
+eureka:
+  instance:
+    instance-id: navi-demo-consumer-8081
+#    zuul灰度发布使用eureka的元数据， zuul加ribbon-discovery-filter-spring-cloud-starter依赖，自动注入MetadataAwareRule,负载算法
+    metadata-map:
+      host-mark: running-host
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+        readTimeout: 10000
+
+  compression:
+    request:
+      enabled: true
+      min-request-size: 2048
+      mime-types: ["text/xml", "application/json", "application/xml"]
+    response:
+      enabled: true
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

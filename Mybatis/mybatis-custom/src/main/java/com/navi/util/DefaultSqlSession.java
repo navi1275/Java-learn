@@ -22,12 +22,8 @@ public class DefaultSqlSession {
         } catch (DocumentException e) {
             e.printStackTrace();
         }
-
-
         InvocationHandler agent = new MapperProxy(mapperStatment);
-
         Class[] arr = {clazz};
-
         return Proxy.newProxyInstance(clazz.getClassLoader(), arr, agent);
 
     }

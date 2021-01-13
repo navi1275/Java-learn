@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 @FeignClient(value = "navi-demo-provider"
         // ,fallbackFactory = DeptFallbackFactory.class
-        ,fallback = DeptFallback.class
+        // ,fallback = DeptFallback.class
 )
 @RequestMapping("/provider/dept")
 public interface DeptService {

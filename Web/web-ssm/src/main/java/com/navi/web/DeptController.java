@@ -35,8 +35,8 @@ public class DeptController {
 
     @RequestMapping("/hello2")
     @ResponseBody
-    public Object hello2(){
-        return deptService.getById(111);
+    public Object hello2(String id){
+        return deptService.getById(id);
     }
 
 }

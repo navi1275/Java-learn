@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
- * LRUCache Class
+ * LRU (Least Recently Used) 的意思就是近期最少使用算法
  *
  * @author navi
  * @date 2019-04-09
@@ -15,7 +15,7 @@ public class LRUCache {
     //用hashmap存储值
     private HashMap<Integer, LinkedNode> data = new HashMap<>();
     //使用双向链表来存储节点实现最近使用
-    //定义值为null的头尾节点
+    //定义头尾节点
     private LinkedNode head;
     private LinkedNode tail;
     private int count;
@@ -55,6 +55,10 @@ public class LRUCache {
         return val;
     }
 
+    /**
+     * 添加节点
+     * @param node
+     */
     private void addNode(LinkedNode node) {
         int key = node.key;
 
@@ -80,6 +84,10 @@ public class LRUCache {
         count++;
     }
 
+    /**
+     * 删除节点
+     * @param node
+     */
     private void deleteNode(LinkedNode node) {
         LinkedNode next = head.next;
         int key = node.key;
@@ -99,6 +107,10 @@ public class LRUCache {
         }
     }
 
+    /**
+     * 移动到头节点
+     * @param node
+     */
     private void moveToHead(LinkedNode node) {
         deleteNode(node);
         addNode(node);

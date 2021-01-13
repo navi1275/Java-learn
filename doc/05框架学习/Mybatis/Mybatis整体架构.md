@@ -8,102 +8,179 @@ MyBatis 是一款优秀的**持久层**框架，它支持定制化 SQL、存储�
 
 ## Mybatis架构
 
-![mybatis-jiagou](images\mybatis-jiagou.png)
+![image-20191104131418955](./Mybatis整体架构.assets/image-20191104131418955.png)
+
+### 基础支持层
+
+是整个MyBatis的基础模块，为核心处理层的功能提供了良好的支撑。主要功能：
+
+* 反射模块
+* 类型转换模块
+* 日志模块
+* 资源加载模块
+* 数据源模块
+* 事务管理
+* 缓存模块
+* Binding模块
+
+
+
+### 核心处理层
+
+核心处理层中实现了`MyBatis`的核心处理流程， 其中包括`MyBatis`的初始化以及完成**一次数据库操作**的涉及的全部流程。
+
+* 配置解析
+
+  在`MyBatis`初始化过程中， 会加载`mybatis-config.xml`配置文件、映射配置文件以及`Mapper`接口中的注解信息，解析后的配置信息会形成相应的对象并保存到`Configuration`对象中。
+
+* SQL解析
+
+* SQL执行
+
+  SQL 语句的执行涉及多个组件，其中比较重要的是 Executor、 StatementHandler、ParameterHandler 和 ResultSetHandler。 Executor 主要负责维护一级缓存和二级缓存，并提供事务管理的相关操作，它会将数据库相关操作委托给 StatementHandler 完成。 StatementHandler 首先通过 ParameterHandler 完成 SQL 语句的实参绑定， 然后通过 java.sql.Statement 对象执行 SQL 语句并得到结果集，最后通过ResultSetHandler 完成结果集的映射，得到结果对象并返回。
+
+  ![image-20191104115813237](./Mybatis整体架构.assets/image-20191104115813237.png)
+
+* 插件
 
 ### 接口层
 
-接口层是MyBatis提供给开发人员的一套API，主要使用SqlSession接口。通过SqlSession接口和Mapper接口，开发人员可以通知MyBatis框架调用哪一条SQL命令以及SQL命令关联参数。
-
-SqlSession接口使用方式
-
-```java
-InputStream is = Resources.getResourceAsStream("mybatis-config.xml");
-SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
-SqlSessionFactory factory = builder.build(is);
-SqlSession sqlSession = factory.openSession();
-
-Dept d = sqlSession.selectOne("DeptMapper.selectByNo", 111);
-```
-
-Mapper接口使用方式
-
-```java
-DeptMapper mapper = sqlSession.getMapper(DeptMapper.class);
-Dept d1 = mapper.selectByNo(111);
-```
+核心就是`SqlSession`接口，该接口中定义了`MyBatis`暴露给应用程序调用的 API， 也就是上层应用与 MyBatis 交互的桥梁。 接口层在接收到调用请求时，会调用核心处理层的相应模块来完成具体的数据库操作 。
 
 
-
-### 数据处理层
-
-数据处理层是MyBatis框架内部实现，来完成对数据库具体操作。主要负责：
-
-1. 参数与SQL命令绑定
-2. SQL命令发送方式
-3. 查询结果类型转换
-
-### 基础支撑层
-
-支撑层用来完成MyBaits与数据库基本连接方式以及SQL命令与配置文件对应。主要负责：
-
-1. MyBatis与数据库连接方式管理
-2. MyBatis对事务管理方式
-3. SQL命令与XML配置对应
-4. MyBatis查询缓存管理
-
-## MyBatis调用流程
-
-![](F:\kkb\Java-learn\doc\images\mybatis调用流程.png)
-
-1. SqlSession
-   接收开发人员提供`Statement Id`和参数，并返回操作结果
-2. Executor
-   MyBatis执行器，是MyBatis 调度的核心，负责SQL语句的生成和查询缓存的维护
-3. StatementHandler
-   封装了`JDBC Statement`操作，负责对`JDBC statement`的操作，如设置参数、将Statement结果集转换成List集合
-4. ParameterHandler
-   负责对用户传递的参数转换成`JDBC Statement`所需要的参数
-5. ResultSetHandler
-   负责将JDBC返回的ResultSet结果集对象转换成List类型的集合
-6. TypeHandler:
-   负责java数据类型和jdbc数据类型之间的映射和转换
-7. MappedStatement:
-   维护了一条<`select`|`update`|`delete`|`insert`>节点的封装
-8. SqlSource:
-   负责根据用户传递的parameterObject，动态地生成SQL语句，将信息封装到BoundSql对象中，并返回BoundSql表示动态生成的SQL语句以及相应的参数信息
-9. Configuration:
-   MyBatis所有的配置信息都维持在Configuration对象之中
-
-## MyBatis使用方式
-基于XML配置文件，SQL命令声明在XML配置文件中
-
-Mapper.java
-
-```java
-Dept selectByNo(Integer no);
-```
-
-Mapper.xml
-
-```xml
-<select id="selectByNo" resultType="Dept">
-    select * from dept where deptno = #{no};
-</select>
-```
-
-
-
-基于注解方式，SQL命令声明在注解中
-
-Mapper.java
-
-```java
-@Select("select * from dept where deptno = #{id}")
-Dept selectById(Integer no);
-```
 
 # SqlSessionFactory
 
-## 基本介绍
+## 简介
 
-每个基于 MyBatis 的应用都是以一个 SqlSessionFactory 的实例为中心的。SqlSessionFactory 的实例可以通过 SqlSessionFactoryBuilder 获得。而 SqlSessionFactoryBuilder 则可以从 XML 配置文件或一个预先定制的 Configuration 的实例构建出 SqlSessionFactory 的实例。
+SqlSessionFactory是MyBatis框架中的一个接口,主要负责MyBatis框架**初始化操作**以及为开发人员提供**SqlSession**对象.
+
+```java
+public interface SqlSessionFactory {
+
+  SqlSession openSession();
+
+  SqlSession openSession(boolean autoCommit);
+  SqlSession openSession(Connection connection);
+  SqlSession openSession(TransactionIsolationLevel level);
+
+  SqlSession openSession(ExecutorType execType);
+  SqlSession openSession(ExecutorType execType, boolean autoCommit);
+  SqlSession openSession(ExecutorType execType, TransactionIsolationLevel level);
+  SqlSession openSession(ExecutorType execType, Connection connection);
+
+  Configuration getConfiguration();
+
+}
+```
+
+## 创建SqlSessionFactory基本执行流程
+
+1. 调用 SqlSessionFactoryBuilder 对象的 build(inputStream) 方法；
+
+   ```java
+   // 获取配置文件流
+   InputStream is = Resources.getResourceAsStream("mybatis-config.xml");
+   
+   SqlSessionFactoryBuilder builder = new SqlSessionFactoryBuilder();
+   // SqlSessionFactory：SqlSession工厂类，以工厂形式创建SqlSession对象，采用了Factory工厂设计模式
+   SqlSessionFactory factory = builder.build(is);
+   ```
+
+   
+
+2. SqlSessionFactoryBuilder 会根据输入流 inputStream 等信息创建XMLConfigBuilder 对象 ; 
+
+3. SqlSessionFactoryBuilder 调用 XMLConfigBuilder 对象的 parse() 方法；
+
+   ```java
+   // SqlSessionFactoryBuilder：SqlSessionFactory的构造器，用于创建SqlSessionFactory，采用了Builder设计模式
+   public SqlSessionFactory build(InputStream inputStream, String environment, Properties properties) {
+       try {
+         XMLConfigBuilder parser = new XMLConfigBuilder(inputStream, environment, properties);
+         return build(parser.parse());
+       } catch (Exception e) {
+         throw ExceptionFactory.wrapException("Error building SqlSession.", e);
+       } finally {
+         ErrorContext.instance().reset();
+         try {
+           inputStream.close();
+         } catch (IOException e) {
+           // Intentionally ignore. Prefer previous error.
+         }
+       }
+     }
+   
+   ```
+
+   
+
+4. XMLConfigBuilder 对象返回 Configuration 对象；
+
+   ```java
+   // Configuration：该对象是mybatis-config.xml文件中所有mybatis配置信息
+   public Configuration parse() {
+       if (parsed) {
+         throw new BuilderException("Each XMLConfigBuilder can only be used once.");
+       }
+       parsed = true;
+       parseConfiguration(parser.evalNode("/configuration"));
+       return configuration;
+     }
+   
+     private void parseConfiguration(XNode root) {
+       try {
+         //issue #117 read properties first
+         propertiesElement(root.evalNode("properties"));
+         Properties settings = settingsAsProperties(root.evalNode("settings"));
+         loadCustomVfs(settings);
+         typeAliasesElement(root.evalNode("typeAliases"));
+         pluginElement(root.evalNode("plugins"));
+         objectFactoryElement(root.evalNode("objectFactory"));
+         objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
+         reflectorFactoryElement(root.evalNode("reflectorFactory"));
+         settingsElement(settings);
+         // read it after objectFactory and objectWrapperFactory issue #631
+         environmentsElement(root.evalNode("environments"));
+         databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+         typeHandlerElement(root.evalNode("typeHandlers"));
+         mapperElement(root.evalNode("mappers"));
+       } catch (Exception e) {
+         throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
+       }
+     }
+   ```
+
+   
+
+5. SqlSessionFactoryBuilder创建一个DefaultSessionFactory 对象,并将Configuration对象作为参数传给DefaultSessionFactory对象；
+
+   ```java
+   public SqlSessionFactory build(Configuration config) {
+       return new DefaultSqlSessionFactory(config);
+     }
+   ```
+
+   
+
+6. SqlSessionFactoryBuilder 返回 DefaultSessionFactory 对象给 Client ，供 Client使用。
+   Client可以使用DefaultSessionFactory对象创建需要的SqlSession.
+
+   ```java
+   SqlSession sqlSession = factory.openSession();
+   DeptMapper mapper = sqlSession.getMapper(DeptMapper.class);
+   ```
+
+
+
+# SqlSession
+
+
+
+
+
+# Executor
+
+## 简介
+
+每一个SqlSession对象都会拥有一个Executor(执行器对象);这个执行对象负责[增删改查]的具体操作.我们可以简单的将它理解为JDBC中Statement的封装版.

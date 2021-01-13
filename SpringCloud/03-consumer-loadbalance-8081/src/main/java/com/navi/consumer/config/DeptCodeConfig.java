@@ -20,16 +20,16 @@ import java.util.List;
 @Configuration
 public class DeptCodeConfig {
 
-    @LoadBalanced
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
-    }
+    // @LoadBalanced
+    // @Bean
+    // public RestTemplate restTemplate(){
+    //     return new RestTemplate();
+    // }
 
-    @Bean
-    public IRule customRule(){
-        List<Integer> list = Arrays.asList(8071);
-        CustomRule customRule = new CustomRule(list);
-        return customRule;
-    }
+    // @Bean
+    // public IRule customRule(){
+    //     List<Integer> list = Arrays.asList(8071);
+    //     CustomRule customRule = new CustomRule(list);
+    //     return customRule;
+    // }
 }

@@ -1,0 +1,82 @@
+server:
+  port: 9000
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+
+spring:
+  application:
+    name: navi-zuul-gateway
+  redis:
+    host: redisOS
+    port: 6379
+
+zuul:
+#  指定路由规则，也可以直接使用微服务名称访问，在ignored-services配置拦截掉微服务名称，*拦截全部微服务名称
+  routes:
+    service8081:
+      path: /navi8081/**
+      serviceId: navi-demo-consumer
+    service8082:
+      path: /navi8082/**
+      serviceId: navi-demo-consumer-8082
+    service8083:
+      path: /navi8083/**
+      serviceId: navi-demo-consumer-8083
+#      直接使用服务名路由，能够负载均衡，默认是轮询算法,使用/navi8081/访问也能够负责均衡
+    navi-demo-consumer: /consumer/**
+#      指定统一前缀
+  prefix: /navi
+#  屏蔽所有微服务名称
+  ignored-services: "*"
+#  配置拦截的url
+  ignored-patterns: /**/list/**
+#  屏蔽指定httphead
+  sensitive-headers: token
+
+  ratelimit:
+    enabled: true
+    key-prefix: navi
+    repository: REDIS
+    behind-proxy: true
+    add-response-headers: true
+    deny-request:
+      response-status-code: 404 #default value is 403 (FORBIDDEN)
+      origins:
+        - 200.187.10.25
+        - somedomain.com
+#    全局限流策略，可单独细化到服务粒度
+    default-policy-list:
+#      每个时间窗口限制数量
+      - limit: 10
+#        每个时间窗口限制请求时间
+        quato: 1000
+#        每秒60次
+        refresh-interval: 60
+        type: #optional
+          - user #用户
+          - origin # 请求地址
+          - url # 请求路径
+#          - http_method #请求方法
+    policy-list:
+#      这里按道理是配置serviceId，但是是配置zuul-routes下serviceId路由的uri
+      consumer:
+        - limit: 2 #optional - request number limit per refresh interval window
+          quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+          refresh-interval: 30 #default value (in seconds)
+          type: #optional
+            - user
+            - origin
+            - url
+#        - type: #optional value for each type
+#            - user=anonymous
+#            - origin=somemachine.com
+#            - url=/api #url prefix
+#            - role=user
+#            - http_method=get #case insensitive
+#            - http_header=customHeader
+#        - type:
+#            - url_pattern=/api/*/payment

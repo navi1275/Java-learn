@@ -1,6 +1,6 @@
 # Spring
 
-> Spring是一个开放源代码的设计层面框架，他解决的是业务逻辑层和其他各层的松耦合问题，因此它将面向接口的编程思想贯穿整个系统应用。Spring是于2003年兴起的一个轻量级的Java 开发框架，由Rod Johnson创建。简单来说，Spring是一个分层的JavaSE/EE **full-stack(****一站式)** [轻量级](https://baike.baidu.com/item/%E8%BD%BB%E9%87%8F%E7%BA%A7/10002835)开源框架。
+> Spring是一个开放源代码的设计层面框架，他解决的是业务逻辑层和其他各层的松耦合问题，因此它将面向接口的编程思想贯穿整个系统应用。Spring是于2003年兴起的一个轻量级的Java 开发框架，由Rod Johnson创建。简单来说，Spring是一个分层的JavaSE/EE **full-stack(一站式)** 轻量级开源框架。
 
 # 如何学习Spring
 
@@ -9,8 +9,6 @@
 - **spring应用**（JDBC支持、事务支持、mybatis整合）
 - **spring源码**（深入理解spring应用、源码学习、设计思想学习）
 - 解决spring框架中暴露的问题
-
-> 
 
 # Spring介绍
 

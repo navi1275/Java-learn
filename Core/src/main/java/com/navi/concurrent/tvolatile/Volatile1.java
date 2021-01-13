@@ -1,5 +1,7 @@
 package com.navi.concurrent.tvolatile;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Volatile1 Class
  *
@@ -28,21 +30,15 @@ public class Volatile1 {
     }
 
     private void stop(){
-        System.out.println("停止线程");
         flag = false ;
+        System.out.println("停止线程");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Volatile1 volatile1 = new Volatile1();
         volatile1.run();
 
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-
-        }
-
+        TimeUnit.SECONDS.sleep(3);
 
         new Thread(new Runnable() {
             @Override

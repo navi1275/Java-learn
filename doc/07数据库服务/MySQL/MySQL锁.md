@@ -227,7 +227,7 @@ create index test_innodb_lock_b_idx on test_innodb_lock(b);
 |      | Session a                                                    | Session b                                                    |
 | ---- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 1    | mysql> set autocommit=0; <br>Query OK, 0 rows affected (0.00 sec) | mysql> set autocommit=0; Query OK, 0 rows affected (0.00 sec) |
-| 2    | ![](F:\kkb\Java-learn\doc\images\微信截图_20190211170832.png)mysql> update test_innodb_lock set b = a * 100 where a < 4 and a > 1; <br>Query OK, 1 row affected (0.02 sec) <br>Rows matched: 2 Changed: 2 Warnings: 0 |                                                              |
+| 2    | ![](\Java-learn\doc\images\微信截图_20190211170832.png)mysql> update test_innodb_lock set b = a * 100 where a < 4 and a > 1; <br>Query OK, 1 row affected (0.02 sec) <br>Rows matched: 2 Changed: 2 Warnings: 0 |                                                              |
 | 3    |                                                              | mysql> insert into test_innodb_lock(a,b) values(2,'500'); <br>**(blocked)** |
 | 4    | mysql> commit; Query OK, 0 rows affected (0.02 sec)          |                                                              |
 | 5    |                                                              | mysql> insert into test_innodb_lock values(2,'500'); <br>Query OK, 1 row affected (38.68 sec) |

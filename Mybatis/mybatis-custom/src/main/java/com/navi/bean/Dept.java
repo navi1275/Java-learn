@@ -13,7 +13,7 @@ public class Dept {
 
     private Integer deptNo;
 
-    private String dname;
+    private String deptName;
 
-    private String loc;
+    private String location;
 }

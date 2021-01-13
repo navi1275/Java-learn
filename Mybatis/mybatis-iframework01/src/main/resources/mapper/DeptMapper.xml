@@ -1,0 +1,12 @@
+<mapper namespace="com.navi.mapper.DeptMapper" >
+  <select id="selectOne" resultType="com.navi.entity.Dept" parameterType="com.navi.entity.Dept">
+      SELECT id, dept_no as 'deptNo', dept_name as 'deptName', location FROM dept WHERE id = #{id}
+      <if test="deptName != null and deptName != ''">
+          AND dept_name LIKE '%${deptName}%'
+          <if test="location != null and location != ''">
+              AND location LIKE '%${location}%'
+          </if>
+      </if>
+  </select>
+</mapper>
+

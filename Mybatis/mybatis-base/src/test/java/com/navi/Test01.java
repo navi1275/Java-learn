@@ -44,4 +44,13 @@ public class Test01 {
 
     }
 
+    @Test
+    public void test1(){
+
+        String s = "SB100VO.SB100BdxxVO.cjbdxml.ybqysyzqybdbVO.ybqysyzqybdbGrid";
+        String[] split = s.split("\\.");
+        System.out.println(split);
+    }
+
+
 }

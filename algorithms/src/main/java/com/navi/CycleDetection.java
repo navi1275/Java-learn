@@ -1,7 +1,7 @@
 package com.navi;
 
 /**
- * CycleDetection Class
+ * Cycle Detection Class
  * 链表环形检测
  *
  * @author navi
@@ -34,10 +34,10 @@ public class CycleDetection {
         while(p2 != null && p2.next != null){
             p1 = p1.next;
             p2 = p2.next.next;
+            // 为了防止p2.val出现空指针异常，需要对p2进行判断
             if(p2 == null) {
                 return false;
             }
-            //为了防止p2.val出现空指针异常，需要对p2进行判断
             int val1 = p1.val;
             int val2 = p2.val;
             if(val1 == val2)

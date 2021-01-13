@@ -45,19 +45,20 @@ public class DeptController {
 
     }
 
-    // @HystrixCommand(fallbackMethod = "errorHandle")
+    // 服务降级配置
+    @HystrixCommand(fallbackMethod = "errorHandle")
     @GetMapping("/get/{id}")
     public DeptDTO get(@PathVariable Integer id) {
         return deptService.selectDeptById(id);
 
     }
 
-    // public DeptDTO errorHandle(Integer id) {
-    //     DeptDTO deptDTO = new DeptDTO();
-    //     deptDTO.setId(id);
-    //     deptDTO.setDeptName("我不是一个科室,方法");
-    //     return deptDTO;
-    // }
+    public DeptDTO errorHandle(Integer id) {
+        DeptDTO deptDTO = new DeptDTO();
+        deptDTO.setId(id);
+        deptDTO.setDeptName("我不是一个科室,方法");
+        return deptDTO;
+    }
 
     @GetMapping("/list")
     public List<DeptDTO> list() {

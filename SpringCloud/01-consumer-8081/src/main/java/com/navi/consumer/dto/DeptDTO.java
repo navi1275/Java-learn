@@ -15,4 +15,8 @@ public class DeptDTO {
     private Integer id;
 
     private String deptName;
+
+    private String deptNo;
+
+    private String location;
 }

@@ -99,7 +99,7 @@ make install PREFIX=/gdata/redis-3.2.12
 
 - 启动图例：
 
-![1545818750862](F:/kkb/Java-Learn/doc/images/redis-start.png)           
+![1545818750862](/Java-Learn/doc/images/redis-start.png)           
 
 客户端窗口关闭或`ctrl+c`，`redis-server`程序就会结束
 
@@ -117,7 +117,7 @@ make install PREFIX=/gdata/redis-3.2.12
   vim redis.conf
   ```
 
-
+​		
 
 ```properties
   # 将`daemonize`由`no`改为`yes`

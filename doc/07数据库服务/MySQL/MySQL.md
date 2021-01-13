@@ -6487,7 +6487,7 @@ mysql-proxy-0.8.5-linux-el6-x86-64bit.tar.gz
 
 -C 
 
-/kkb
+/test
 
 [mysql-proxy]
 

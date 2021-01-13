@@ -6,7 +6,7 @@
             http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
             http://navi.com/schema/SamRpc http://navi.com/schema/SamRpc.xsd">
 
-    <SamRpc:reference id="helloService" interface="com.navi.service.HelloService"/>
+    <SamRpc:reference id="helloService" interface="HelloService"/>
 
 
 </beans>

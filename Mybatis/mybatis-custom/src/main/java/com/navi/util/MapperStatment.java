@@ -36,22 +36,19 @@ public class MapperStatment {
     }
 
     public void init() throws DocumentException {
-    //    1.获得当前要操作的dao接口的类名 DeptDao
+        // 1.获得当前要操作的dao接口的类名 DeptDao
         String name = clazz.getName();
+        int index = name.lastIndexOf(".");
+        name = name.substring(index + 1);
 
-        int size = name.lastIndexOf(".");
-
-        name = name.substring(size + 1);
         //    2.接口DeptDao关联的mapper文件加载到内存 dom4j
-
         SAXReader saxReader = new SAXReader();
         InputStream is = this.getClass().getResourceAsStream("/" + name + ".xml");
-
         Document document = saxReader.read(is);
 
         //    3.找到接口中的所有方法关联的sql语句，形成映射关系
         Method[] methods = clazz.getMethods();
-        for (int i = 0; i < methods.length; i++){
+        for (int i = 0; i < methods.length; i++) {
             Method method = methods[i];
             String methodName = method.getName();
 
@@ -60,22 +57,14 @@ public class MapperStatment {
             List nodeList = document.selectNodes(xPath);
 
             Element element = (Element) nodeList.get(0);
-
-
             String sql = element.getStringValue();
             System.out.println("sql:  " + sql);
-
-
             String resultType = element.attributeValue("resultType");
 
-            if(resultType != null && resultType != ""){
+            if (resultType != null && resultType != "") {
                 rtMap.put(methodName, resultType);
             }
             sqlMap.put(methodName, sql);
         }
-
-
-
-
     }
 }

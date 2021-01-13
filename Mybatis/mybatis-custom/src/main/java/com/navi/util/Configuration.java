@@ -15,7 +15,7 @@ public class Configuration {
     static {
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/kkb", "root", "123456");
+            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/test", "root", "123456");
         } catch (Exception e) {
             e.printStackTrace();
         }

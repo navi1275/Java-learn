@@ -10,38 +10,46 @@ package com.navi.sort;
  */
 public class QuickSort {
 
-    public static void sort(int[] arr, int L, int R){
+    public static void sort(int[] arr, int initLeft, int initRight){
 
-        int i = L;
-        int j = R;
+        // 定义左右两个指针
+        int pointLeft = initLeft;
+        int pointRight = initRight;
 
-        int pivot = arr[(i + j)/2];
-        while (i <= j){
-            while (arr[i] < pivot){
-                i++;
+        // 获取中间节点
+        int pivot = arr[(pointLeft + pointRight)/2];
+        // 循环
+        while (pointLeft <= pointRight){
+            // 获取左侧比中间节点大的数
+            while (arr[pointLeft] < pivot){
+                pointLeft++;
             }
 
-            while (arr[j] > pivot){
-                j--;
+            // 获取右侧比中间节点小的数
+            while (arr[pointRight] > pivot){
+                pointRight--;
             }
 
-            if(i<=j){
-                if(i<j) {
-                    int temp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = temp;
+            // 交换，并偏移左右指针
+            if(pointLeft<=pointRight){
+                if(pointLeft<pointRight) {
+                    int temp = arr[pointLeft];
+                    arr[pointLeft] = arr[pointRight];
+                    arr[pointRight] = temp;
                     print(arr);
                 }
-                i++;
-                j--;
+                pointLeft++;
+                pointRight--;
             }
         }
 
-        if(j > L){
-            sort(arr, L, j);
+        // 如果右指针大于左初始位置，调用自身
+        if(pointRight > initLeft){
+            sort(arr, initLeft, pointRight);
         }
-        if(i < R){
-            sort(arr, i, R);
+        // 如果左指针小于右初始位置，调用自身
+        if(pointLeft < initRight){
+            sort(arr, pointLeft, initRight);
         }
 
 
@@ -55,7 +63,7 @@ public class QuickSort {
     }
 
     public static void main(String[] args) {
-        int[] arr = {9, 7, 8, 3, 1, 5, 2, 4};
+        int[] arr = {9, 7, 8, 3, 1, 5, 2, 4, 6};
         // int[] arr = {9, 8, 7, 6, 5, 4, 3, 2};
         print(arr);
 

@@ -67,7 +67,7 @@ public class DeptController {
         String ip = request.getLocalAddr();
         String key = ip + "_selectDeptById_fallback";
 
-        cacheKey(key);
+        alarm(key);
 
         DeptDTO deptDTO = new DeptDTO();
         deptDTO.setId(id);
@@ -75,7 +75,7 @@ public class DeptController {
         return deptDTO;
     }
 
-    private void cacheKey(String key) {
+    private void alarm(String key) {
 
         BoundValueOperations<String, String> operations = redisTemplate.boundValueOps(key);
 

@@ -10,7 +10,7 @@
 
 服务器收到ACK报文之后也处于**established**状态，此时双方建立起了链接，三次握手完成
 
-![img](F:\kkb\Java-learn\doc\01计算机基础\assets\16a074b331fb0d85)
+![img](assets\16a074b331fb0d85.jpg)
 
 ## 作用
 
@@ -31,11 +31,11 @@
 
 5.服务端收到ACK报文之后，就关闭连接，处于**CLOSED**状态
 
-![img](F:\kkb\Java-learn\doc\01计算机基础\assets\16a074b855ad3850)
+![img](assets\16a074b855ad3850.jpg)
 
 
 
 **TIME_WAIT状态**，为什么客户端发送ACK报文之后不直接关闭，而是要等一阵子才关闭？原因就是客户端要确保服务器已经接收到ACK报文了。如果没有接收到的话，服务器会重新发送FIN报文给客户端，客户端再次收到FIN报文，就知道之前的ACK报文丢失了，然后再次发送ACK报文。TIME_WAIT持续的使劲至少是一个报文来回的时间，设置一个计时，如果过了这个计时（RTT Round Trip Time 连接往返时间）都没有再次受到FIN报文，则代表服务器接收到了ACK报文，此时处于CLOSED状态
 
-![img](F:\kkb\Java-learn\doc\01计算机基础\assets\169c39cc18e7592a)
+![img](assets\169c39cc18e7592a.jpg)
 

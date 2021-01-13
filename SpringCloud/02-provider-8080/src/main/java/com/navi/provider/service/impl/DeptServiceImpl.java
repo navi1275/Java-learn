@@ -4,6 +4,7 @@ import com.navi.provider.entity.Dept;
 import com.navi.provider.repository.DeptRepository;
 import com.navi.provider.service.DeptService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,9 @@ public class DeptServiceImpl implements DeptService {
 
     @Autowired
     private DeptRepository repository;
+
+    @Value("${server.port}")
+    private String port;
 
     @Override
     public boolean saveDept(Dept dept) {
@@ -53,6 +57,7 @@ public class DeptServiceImpl implements DeptService {
     public Dept selectDeptById(Integer id) {
         if (repository.existsById(id)) {
             Dept obj = repository.getOne(id);
+            obj.setDeptName(port + obj.getDeptName());
             return obj;
         }
         return null;
