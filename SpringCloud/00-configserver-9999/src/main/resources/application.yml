@@ -1,0 +1,14 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: navi-configserver
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: 
+          timeout: 5
+          default-label: master
