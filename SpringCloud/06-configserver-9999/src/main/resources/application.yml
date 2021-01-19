@@ -1,0 +1,19 @@
+server:
+  port: 9999
+
+spring:
+  application:
+    name: navi-configserver
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/navi1275/Java-learn.git
+          timeout: 5
+          default-label: master
+          strict-host-key-checking: false
+          username: ganxf0830@gmail.com
+          password: 06051407fei
+          basedir:
+

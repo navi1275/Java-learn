@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+#配置eureka注册中心
+eureka:
+  client:
+    service-url:
+#      eureka 集群配置
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka
+#      defaultZone: http://localhost:8090/eureka
+#  实例名称
+  instance:
+    instance-id: navi-demo-provider-8080
+
+management:
+#  开启所有监控终端
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+spring:
+  application:
+    name: navi-demo-provider
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+
+
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://mysqlOS:3306/test?useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 123456
+
+logging:
+  pattern:
+    console: level-%level %msg%n
+  level:
+    root: info
+    org.hibernate: info
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+    org.hibernate.type.descriptor.sql.BasicExtractor: trace
+    com.navi: debug
+
+info:
+  auth: Ivan
+

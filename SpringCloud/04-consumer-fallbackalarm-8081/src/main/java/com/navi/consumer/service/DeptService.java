@@ -1,8 +1,6 @@
 package com.navi.consumer.service;
 
 import com.navi.consumer.dto.DeptDTO;
-import com.navi.consumer.fallback.DeptFallback;
-import com.navi.consumer.fallback.DeptFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +19,6 @@ import java.util.List;
  */
 @Service
 @FeignClient(value = "navi-demo-provider"
-        // ,fallbackFactory = DeptFallbackFactory.class
-        // ,fallback = DeptFallback.class
 )
 @RequestMapping("/provider/dept")
 public interface DeptService {
