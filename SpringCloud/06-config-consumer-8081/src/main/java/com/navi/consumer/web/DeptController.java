@@ -5,6 +5,7 @@ import com.navi.consumer.service.DeptService;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,12 @@ public class DeptController {
     @Autowired
     private DeptService deptService;
 
+    @Value("${dept.prefix}")
+    private String prefix;
+
     @PostMapping("/save")
     public Boolean save(@RequestBody DeptDTO dept) {
+        dept.setDeptName(prefix + dept.getDeptName());
         return deptService.saveDept(dept);
     }
 

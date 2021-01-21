@@ -4,6 +4,7 @@ import com.navi.provider.entity.Dept;
 import com.navi.provider.service.DeptService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,10 @@ public class DeptController {
     @Autowired
     private DiscoveryClient client;
 
+    @Value("${dept.suffix}")
+    private String suffix;
+
+
     @GetMapping("/discovery")
     public Object discovery(){
         List<String> services = client.getServices();
@@ -51,6 +56,7 @@ public class DeptController {
 
     @PostMapping("/save")
     public Boolean save(@RequestBody Dept dept) {
+        dept.setDeptName(dept.getDeptName() + suffix);
         return deptService.saveDept(dept);
     }
 

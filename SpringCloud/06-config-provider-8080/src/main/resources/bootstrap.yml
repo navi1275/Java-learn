@@ -3,5 +3,5 @@ spring:
     config:
       uri: http://localhost:9999
       label: master
-      name: applcation-provider-config
+      name: application-provider-config
       profile: dev

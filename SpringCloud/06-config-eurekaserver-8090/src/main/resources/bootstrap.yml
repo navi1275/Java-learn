@@ -1,22 +1,7 @@
-server:
-  port: 8090
-
-# eureka配置
-eureka:
-  instance:
-    hostname: localhost #指定主机
-  client:
-    register-with-eureka: false #指定是否向注册中心注册自己
-    fetch-registry: false #指定此客户端是否能够获取eureka注册信息
-    service-url: #暴露地址
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka
-  server:
-#    自我保护机制阈值，默认是0.85
-    renewal-percent-threshold: 0.5
-#    紧急情况！当微服务主机联系不上时，Eureka 不能够正确判断它们是否处于 up 状 态。当更新（指收到的微服务主机的心跳）小于阈值时，为了安全，微服务主机将不再失效。
-      #
-      #默认情况下，EurekaServer 在 90 秒内没有检测到服务列表中的某微服务，则会自动将 该微服务从服务列表中删除。但很多情况下并不是该微服务节点（主机）出了问题，而是由 于网络抖动等原因使该微服务无法被 EurekaServer 发现，即无法检测到该微服务主机的心跳。 若在短暂时间内网络恢复正常，但由于 EurekaServer 的服务列表中已经没有该微服务，所以 该微服务已经无法提供服务了。
-    #
-    #在短时间内若 EurekaServer 丢失较多微服务，即 EurekaServer 收到的心跳数量小于阈值， 为了保证系统的可用性（AP），给那些由于网络抖动而被认为宕机的客户端“重新复活”的 机会，Eureka 会自动进入自我保护模式：服务列表只可读取、写入，不可执行删除操作。当 EurekaServer 收到的心跳数量恢复到阈值以上时，其会自动退出 Self Preservation 模式。
-#    关闭自我保护机制
-    enable-self-preservation: false
+spring:
+  cloud:
+    config:
+      uri: http://localhost:9999
+      label: master
+      name: application-eureka-config
+      profile: dev

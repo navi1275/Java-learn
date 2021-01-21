@@ -36,16 +36,4 @@ spring:
     username: root
     password: 123456
 
-logging:
-  pattern:
-    console: level-%level %msg%n
-  level:
-    root: info
-    org.hibernate: info
-    org.hibernate.type.descriptor.sql.BasicBinder: trace
-    org.hibernate.type.descriptor.sql.BasicExtractor: trace
-    com.navi: debug
-
-info:
-  auth: Ivan
 

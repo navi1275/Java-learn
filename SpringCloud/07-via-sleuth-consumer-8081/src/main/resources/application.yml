@@ -1,0 +1,20 @@
+server:
+  port: 8081
+
+
+
+spring:
+  application:
+    name: navi-demo-consumer
+  zipkin:
+    base-url: http://serverOS:9411/
+  sleuth:
+    sampler:
+      probability: 1.0
+
+eureka:
+  instance:
+    instance-id: navi-demo-consumer-8081
+  client:
+    service-url:
+      defaultZone: http://localhost:8090/eureka,http://localhost:8091/eureka,http://localhost:8092/eureka

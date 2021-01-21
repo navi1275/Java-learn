@@ -9,11 +9,12 @@ spring:
     config:
       server:
         git:
-          uri: https://github.com/navi1275/Java-learn.git
+          uri: https://gitee.com/ganxf/springcloudconfig.git
+#          uri: https://github.com/navi1275/Java-learn.git
           timeout: 5
           default-label: master
           strict-host-key-checking: false
-          username: ganxf0830@gmail.com
-          password: 06051407fei
-          basedir:
+          username: gxf-ly2009@163.com
+          password: feng2008
+#          basedir: SpringCloud/config
 
