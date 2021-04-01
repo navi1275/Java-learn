@@ -27,17 +27,21 @@ import java.lang.reflect.Proxy;
 public class RpcClient {
 
     public static <T> T create(Class<T> clazz) {
+        // 动态代理
         return (T)Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 
                 final RpcClientHandler handler = new RpcClientHandler();
+                // 创建NioEventLoopGroup
                 NioEventLoopGroup group = new NioEventLoopGroup();
-
                 try {
+                    // netty客户端使用Bootstrap
                     Bootstrap bootstrap = new Bootstrap();
+                    // 1.绑定上面创建的group
                     bootstrap.group(group)
                             .channel(NioSocketChannel.class)
+                            //ChannelOption.TCP_NODELAY 设置成true，禁用nagle算法，减少延迟
                             .option(ChannelOption.TCP_NODELAY, true)
                             .handler(new ChannelInitializer<SocketChannel>() {
                                 @Override
@@ -48,6 +52,7 @@ public class RpcClient {
                                     pipeline.addLast(handler);
                                 }
                             });
+                    // sync 使异步转同步
                     ChannelFuture future = bootstrap.connect("127.0.0.1", 8888).sync();
                     InvokeInfo invokeInfo = new InvokeInfo();
                     invokeInfo.setClazzName(clazz.getName());

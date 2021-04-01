@@ -16,9 +16,9 @@
     <dubbo:protocol name="dubbo"/>
 
     <!-- service implementation, as same as regular local bean -->
-    <bean id="helloService" class="HelloServiceImpl"/>
+    <bean id="helloService" class="com.navi.service.impl.HelloServiceImpl"/>
 
     <!-- declare the service interface to be exported -->
-    <dubbo:service interface="HelloService" ref="helloService"/>
+    <dubbo:service interface="com.navi.service.HelloService" ref="helloService"/>
 
 </beans>

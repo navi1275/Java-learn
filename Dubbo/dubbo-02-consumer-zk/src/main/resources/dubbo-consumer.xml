@@ -15,6 +15,6 @@
     <dubbo:protocol name="dubbo"/>
 
     <!-- declare the service interface to be exported -->
-    <dubbo:reference id="helloService" interface="HelloService" url="dubbo://localhost:20880" timeout="60000"/>
+    <dubbo:reference id="helloService" interface="com.navi.service.HelloService" url="dubbo://localhost:20880" timeout="60000"/>
 
 </beans>

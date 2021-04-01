@@ -8,6 +8,7 @@
     <modules>
         <module>SpringBoot</module>
         <module>RocketMQ</module>
+        <module>Dubbo</module>
     </modules>
     <groupId>com.navi</groupId>
     <artifactId>Java-Learn</artifactId>
