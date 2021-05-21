@@ -33,6 +33,7 @@ public class LC70爬楼梯 {
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    //    动态规划
     public int climbStairs(int n) {
         int[] dp = new int[n+1];
         dp[0] = 1;
@@ -43,6 +44,7 @@ class Solution {
         return dp[n-1];
     }
 
+    // 递归
     public int climbStairs1(int n) {
         if(n == 1) return 1;
         if(n == 2) return 2;

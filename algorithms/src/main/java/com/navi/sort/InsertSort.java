@@ -13,9 +13,12 @@ public class InsertSort {
 
     public static void sort(int[] arr) {
 
+        // 从数组第二位开始遍历
         for (int i = 1; i < arr.length; i++) {
             int temp = arr[i];
             int index = i;
+            // 遍历之前的序列，将第i个数字插入到有序序列中
+            // 前i位有序，比第i位大的后移
             for (int j = i - 1; j > -1 && temp < arr[j]; j--) {
                 arr[j + 1] = arr[j];
                 index = j;

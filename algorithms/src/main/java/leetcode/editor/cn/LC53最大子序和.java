@@ -67,14 +67,13 @@ class Solution {
         int maxSub = nums[0];
         for (int i = 1; i < nums.length; i++) {
             int num = nums[i];
+            // 累加，如果sum小于0，sum等于num
             if(sum > 0){
                 sum += num;
             }else{
                 sum = num;
             }
-            System.out.println("sum ===== " + sum);
             maxSub = Math.max(maxSub, sum);
-            System.out.println("maxSub ======= " + maxSub);
         }
         return maxSub;
     }

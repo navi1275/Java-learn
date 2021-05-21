@@ -34,7 +34,7 @@ public class HeapSort {
     public static void heapify(int[] arrays, int currentRootNode, int size) {
 
         if (currentRootNode < size) {
-            //左子树和右字数的位置
+            //左子树和右子树的位置
             int left = 2 * currentRootNode + 1;
             int right = 2 * currentRootNode + 2;
 

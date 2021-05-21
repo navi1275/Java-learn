@@ -33,7 +33,7 @@ public class Demo0329 {
         //11186206671
         long sum = 0;
         for (int i = 0; i <list.size(); i++) {
-            sum += list.get(i) * (i + 1);FailoverCluster
+            sum += list.get(i) * (i + 1);
         }
 
         System.out.println(sum);

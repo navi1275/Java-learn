@@ -16,6 +16,7 @@ public class UserServiceProxyFactory {
 
     public static UserService getProxy(){
         Enhancer enhancer = new Enhancer();
+        // cglib使用的是继承，但不需要定义子类继承代理类
         enhancer.setSuperclass(UserService.class);
         enhancer.setCallback(new MethodInterceptor() {
             @Override

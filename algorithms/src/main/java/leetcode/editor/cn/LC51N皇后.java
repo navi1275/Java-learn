@@ -80,6 +80,7 @@ class Solution {
                     return false;
                 }
             }
+            //从上层开始放，只考虑左上和右上有没有'Q'的情况
             //左上没有
             for (i = row - 1, j = col - 1; i > -1 && j > -1 ; i--,j--) {
                 if(board[i][j] == 'Q'){
@@ -107,6 +108,7 @@ class Solution {
             return;
         }
         for (int i = 0; i < n; i++){
+            //初始化
             if(row == 0) {
                 board = new char[n][n];
                 for (int j = 0; j < n; j++) {
@@ -118,7 +120,9 @@ class Solution {
             boolean check = check(board, row, i);
             if(check){
                 board[row][i] = 'Q';
+                //递归到下层查找
                 findNQueens(board, row + 1);
+                //找到后要将字段设置成'.'
                 board[row][i] = '.';
 
             }

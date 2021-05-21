@@ -19,7 +19,7 @@ public class CountDownLatchExample {
     private static CountDownLatch countDownLatch = new CountDownLatch(2);
 
     public static void main(String[] args) throws InterruptedException {
-        // 手动创建线程池，效果会更好哦。
+        // 手动创建线程池
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
         executorService.submit(()->{
@@ -30,6 +30,7 @@ public class CountDownLatchExample {
             } finally {
                 log.info("Thread-1 执行完毕");
                 countDownLatch.countDown();
+                log.info("计数器值为：" + countDownLatch.getCount());
             }
         });
 
@@ -41,6 +42,7 @@ public class CountDownLatchExample {
             } finally {
                 log.info("Thread-2 执行完毕");
                 countDownLatch.countDown();
+                log.info("计数器值为：" + countDownLatch.getCount());
             }
         });
 

@@ -7,6 +7,7 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @EnableHystrixDashboard
+//开启熔断器
 @EnableCircuitBreaker
 @EnableFeignClients(basePackages = "com.navi.consumer.service")
 @SpringBootApplication

@@ -1,6 +1,6 @@
 package com.navi.web;
 
-import com.navi.dto.Student;
+import com.navi.entity.Student;
 import org.assertj.core.util.Lists;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2020/7/2
  */
 @RestController
-public class DemoController {
+public class StudentController {
 
     @RequestMapping("hello")
     public Object hello(){

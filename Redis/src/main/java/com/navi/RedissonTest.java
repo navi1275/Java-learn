@@ -22,12 +22,12 @@ public class RedissonTest {
         config.useSingleServer().setAddress("redis://redisOs:6379");
         RedissonClient client = Redisson.create(config);
 
-        // RLock lock = client.getLock("redissonLock");
-        // // lock.lock();
-        // lock.lock(3, TimeUnit.SECONDS);
-        // boolean locked = lock.isLocked();
-        // System.out.println(locked);
-        // lock.unlock();
+        RLock lock = client.getLock("redissonLock");
+        // lock.lock();
+        lock.lock(3, TimeUnit.SECONDS);
+        boolean locked = lock.isLocked();
+        System.out.println(locked);
+        lock.unlock();
 
 
         RMap<String, User> redissonMap = client.getMap("redissonMap");

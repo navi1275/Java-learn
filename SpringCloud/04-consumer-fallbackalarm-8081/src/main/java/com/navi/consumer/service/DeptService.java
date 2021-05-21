@@ -18,8 +18,7 @@ import java.util.List;
  * @since 1.0.0
  */
 @Service
-@FeignClient(value = "navi-demo-provider"
-)
+@FeignClient(value = "navi-demo-provider")
 @RequestMapping("/provider/dept")
 public interface DeptService {
 

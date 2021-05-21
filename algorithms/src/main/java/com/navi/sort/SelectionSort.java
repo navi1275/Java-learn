@@ -14,6 +14,7 @@ public class SelectionSort {
 
         for (int i = arr.length - 1; i > 0; i--){
             int maxIndex = 0;
+            // 将最大的值找出来，放到最后面
             for (int j = 1; j < i + 1; j++){
                 if(arr[maxIndex] < arr[j]) {
                     maxIndex = j;

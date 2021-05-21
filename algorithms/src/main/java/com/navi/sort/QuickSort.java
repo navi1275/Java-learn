@@ -16,7 +16,7 @@ public class QuickSort {
         int pointLeft = initLeft;
         int pointRight = initRight;
 
-        // 获取中间节点
+        // 随机选一个基准值，这里选中间节点
         int pivot = arr[(pointLeft + pointRight)/2];
         // 循环
         while (pointLeft <= pointRight){
