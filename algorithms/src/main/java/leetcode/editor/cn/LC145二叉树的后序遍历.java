@@ -17,7 +17,7 @@ package leetcode.editor.cn;
 // Related Topics 栈 树 
 // 👍 548 👎 0
 
-import java.util.List;
+import java.util.*;
 
 /**
  * LC145二叉树的后序遍历
@@ -45,14 +45,43 @@ public class LC145二叉树的后序遍历{
  * }
  */
 class Solution {
-    public List<Integer> postorderTraversal(TreeNode root) {
-        if(root == null){
+    public List<Integer> postorderTraversal1(TreeNode root, List<Integer> list) {
+        if (root == null) {
             return null;
         }
-        if(root.left != null){
-            postorderTraversal(root.left);
+        postorderTraversal1(root.left, list);
+        postorderTraversal1(root.right, list);
+        list.add(root.val);
+        return list;
+    }
+
+    public List<Integer> postorderTraversal(TreeNode root, List<Integer> list) {
+        if (root == null) {
+            return null;
         }
-        return null;
+        Deque<TreeNode> stack1 = new ArrayDeque<>();
+        Deque<TreeNode> stack2 = new ArrayDeque<>();
+        stack1.push(root);
+        while (!stack1.isEmpty()){
+            TreeNode pop = stack1.pop();
+            stack2.push(pop);
+            if(pop.left != null){
+                stack1.push(pop.left);
+            }
+            if(pop.right != null){
+                stack1.push(pop.right);
+            }
+        }
+        while (!stack2.isEmpty()){
+            TreeNode pop = stack2.pop();
+            list.add(pop.val);
+        }
+        return list;
+    }
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> list = new ArrayList<Integer>();
+        postorderTraversal(root, list);
+        return list;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)

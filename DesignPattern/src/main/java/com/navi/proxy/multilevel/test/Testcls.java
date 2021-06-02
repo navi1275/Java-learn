@@ -4,6 +4,8 @@ import com.navi.proxy.multilevel.impl.Cicadas;
 import com.navi.proxy.multilevel.service.BaseService;
 import com.navi.proxy.multilevel.util.CicadasProxyFactory;
 
+import java.io.IOException;
+
 /**
  * Testcls Class
  *
@@ -13,9 +15,10 @@ import com.navi.proxy.multilevel.util.CicadasProxyFactory;
  */
 public class Testcls {
 
-    public static void main(String[] args) throws InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws InstantiationException, IllegalAccessException, IOException {
         BaseService instance = CicadasProxyFactory.getInstance(Cicadas.class);
 
         instance.eating();
+        System.in.read();
     }
 }
