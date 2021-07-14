@@ -28,5 +28,9 @@ public class ByteTest {
         System.out.println(Pattern.matches("^-?([0-9]+|[0-9]{1,3}(,[0-9]{3})*)(.[0-9]{1,2})?$", "21,123,123,123.00"));
 
         System.out.println("260,512.00".replaceAll(",", ""));
+
+        while (true){
+
+        }
     }
 }
